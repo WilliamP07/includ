@@ -11,14 +11,20 @@
       <div class="col-md-5 col-12">
         <div class="card-body shadow card-rounded">
           <div class="row">
-            <div class="pt-3 pb-4" style="display:flex; justify-content: center;">
-              <img src="/img/pinterest-logo.png" class="logo-size" alt="" />
+            <div
+              class="pt-3 pb-4"
+              style="display: flex; justify-content: center"
+            >
+              <img src="/logos/logo-includ.png" class="logo-size" alt="" />
             </div>
           </div>
           <h2 class="text-black fw-bold text-center mx-4">
-            Acceso gratuito ilimitado a las mejores ideas del mundo
+            Ingresa tus datos para registrarte
           </h2>
-          <h6 class="text-muted text-center mt-2">Regístrate para ver más</h6>
+          <h6 class="text-black text-center">
+            o <a href="/login" class="no-decoration">inicia sesión aquí</a> si
+            ya tienes cuenta.
+          </h6>
           <div class="auth">
             <div data-app>
               <v-container width="100%">
@@ -107,13 +113,7 @@
                       class="text-center"
                       @click="save()"
                     >
-                      <v-btn
-                        class="btn btn-normal"
-                        style="
-                          padding-left: 3rem !important;
-                          padding-right: 3rem !important;
-                        "
-                      >
+                      <v-btn class="btn btn-rounded-primary">
                         Registrarse
                       </v-btn>
                     </v-col>

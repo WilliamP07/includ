@@ -8,14 +8,14 @@
                     <div class="card-body">
                         <div class="row mb-0 mt-0">
                             <div class="col-md-12 text-center pt-3 pb-3">
-                                <img src="{{ asset('img/pinterest-logo.png') }}" class="logo-size" alt="Escudo_D">
+                                <img src="{{ asset('logos/logo-includ.png') }}" class="logo-size" alt="Logo includ">
                             </div>
                         </div>
-                        <h2 class="text-black fw-bold text-center">Inicia sesión para ver más</h2>
-                        {{-- <h6 class="color-primary text-center mb-3">o <a href="{{ route('register') }}"
+                        <h2 class="text-black fw-bold text-center">Ingresa tus datos para iniciar</h2>
+                        <h6 class="text-black text-center mb-3">o <a href="{{ route('register') }}"
                                 class="no-decoration">regístrate
                                 aquí</a> si aún no tienes
-                            cuenta.</h6> --}}
+                            cuenta.</h6>
 
                         @if (env('LOCAL_LOGIN'))
                             <form method="POST" action="{{ route('login') }}">
@@ -68,13 +68,13 @@
 
                                 <div class="row mb-0 mt-0">
                                     <div class="col-md-12 pt-2 pb-2 text-center">
-                                        <button type="submit" class="btn btn-normal-forms shadow-none">
+                                        <button type="submit" class="btn btn-rounded-primary shadow-none">
                                             {{ __('INICIAR SESIÓN') }}
                                         </button>
                                     </div>
                                     <div class="col-md-12 pt-2 pb-2 text-center">
                                         @if (Route::has('password.request'))
-                                            <a class="text-black fw-bold shadow-none" href="{{ route('password.request') }}">
+                                            <a class="text-black shadow-none" href="{{ route('password.request') }}" style="text-decoration: underline">
                                                 {{ __('¿Olvidaste tu contraseña?') }}
                                             </a>
                                         @endif
@@ -82,18 +82,6 @@
                                 </div>
                             </form>
                         @endif
-
-                        {{-- LOGIN SV --}}
-                        @if (env('LOGIN_SV_LOGIN'))
-                            <div class="form-group row-fluid mb-0">
-                                <div class="col-md-12 text-center">
-                                    <a href="/redirectToProvider" class=" btn btn-normal shadow-none text-uppercase">
-                                        {{ __('Iniciar sesión con LoginSV') }}
-                                    </a>
-                                </div>
-                            </div>
-                        @endif
-                        {{-- END LOGIN SV --}}
                     </div>
                 </div>
             </div>

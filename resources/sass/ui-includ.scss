@@ -1,9 +1,16 @@
-@font-face {
-    font-family: "Museo Sans";
+// @font-face {
+//     font-family: "Museo Sans";
+//     font-style: normal;
+//     font-weight: normal;
+//     src: local("Tangerine"),
+//         url("../fonts/MuseoSans-300.ttf") format("truetype");
+// }
+
+.montserrat-normal {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
     font-style: normal;
-    font-weight: normal;
-    src: local("Tangerine"),
-        url("../fonts/MuseoSans-300.ttf") format("truetype");
 }
 
 /**
@@ -15,149 +22,94 @@
 html,
 body {
     background-color: $body-bg;
-    font-family: "Museo Sans";
+    font-family: $font-montserrat;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
     scroll-behavior: smooth;
 }
-
 main {
     min-height: 80vh;
     background-color: $body-bg;
 }
-
+.header {
+    background-color: $header-bg !important;
+}
 header,
 main,
 footer {
     flex-shrink: 0;
 }
-
-.color-primary {
-    color: $blue-primary;
+.text-primary {
+    color: $color-primary !important;
 }
-.color-primary-light {
-    color: $blue-secondary;
+.text-secondary {
+    color: $color-secondary !important;
 }
-.color-secondary {
-    color: $grey-primary;
+.text-terciary {
+    color: $color-terciary !important;
 }
-
+.text-grey {
+    color: $grey !important;
+}
+.bg-primary {
+    background-color: $color-primary;
+}
+.bg-secondary {
+    background-color: $color-secondary;
+}
+.bg-terciary {
+    background-color: $color-terciary;
+}
 .no-decoration {
     text-decoration: none !important;
 }
-
 .logo-size {
-    max-width: 60px;
-    max-height: 60px;
+    max-width: 80px;
+    max-height: auto;
 }
-
-.discover-1{
-    height: 400px;
-    width: 100%;
-    border-radius: 16px;
-    background-image: url("/img/1.jpg");
-    background-position: center center;
-    background-size: cover;
-}
-.discover-2{
-    height: 400px;
-    width: 100%;
-    border-radius: 16px;
-    background-image: url("/img/2.jpg");
-    background-position: center center;
-    background-size: cover;
-}
-.discover-3{
-    height: 400px;
-    width: 100%;
-    border-radius: 16px;
-    background-image: url("/img/3.jpg");
-    background-position: center center;
-    background-size: cover;
-}
-
-.discover{
-    padding: 24px;
-    border-radius: 16px;
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.4) 100%);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-}
-
-.comments{
-    display: flex;
-    margin-bottom: 4px;
-}
-.group{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10px 15px;
-}
-.actions-post{
-    display: flex;
-    justify-content: space-between;
-}
-
-.create{
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    cursor: pointer;
-}
-
-.create:hover{
-    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+.nav-link {
+    margin-right: 0.5rem;
 }
 
 /**
- * Header
+ * Buttons
  *
  * -------------------------------------------------------------------
  */
 
-.header {
-    background-color: $header-bg !important;
-}
 
 .btn-logout {
-    color: $blue-primary;
+    color: $color-primary;
     text-decoration: none !important;
     font-weight: 700;
 }
 
-.btn-normal-nav {
-    background-color: $blue-secondary !important;
-    color: $light-secondary !important;
-    border-radius: 50px;
-    padding: 6px 1.5rem;
-}
-
-.btn-normal-nav:hover {
-    background-color: $blue-primary-dark !important;
-    color: $light-secondary !important;
-}
-
-.btn-normal-secondary-nav {
-    background-color: transparent !important;
-    border-color: $blue-secondary;
-    color: $blue-secondary !important;
+.btn-rounded-primary {
+    background-color: $color-primary !important;
+    color: $white !important;
     border-radius: 50px;
     padding: 6px 1.5rem;
     font-weight: 700;
+    text-transform: uppercase;
 }
 
-.btn-normal-secondary-nav:hover {
-    background-color: transparent !important;
-    border-color: $blue-primary-dark;
-    color: $blue-primary-dark !important;
+.btn-rounded-primary:hover {
+    color: $white !important;
 }
 
-.nav-link {
-    margin-right: 0.5rem;
+.btn-outlined-primary {
+    background-color: transparent;
+    border-color: $color-primary;
+    color: $color-primary;
+    border-radius: 50px;
+    padding: 6px 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.btn-outlined-primary:hover {
+    color: $color-primary;
 }
 
 /**
@@ -175,23 +127,8 @@ footer {
 
 .form-control {
     border-radius: 0 !important;
-    border: 1px solid $blue-primary-light !important;
+    border: 1px solid $color-primary !important;
     font-weight: 500 !important;
-}
-
-.btn-normal-forms {
-    background-color: $blue-secondary !important;
-    color: $light-secondary !important;
-    border-radius: 50px;
-    padding: 0.5rem 4.2rem;
-    letter-spacing: 2px;
-    font-weight: 500;
-    text-transform: uppercase;
-}
-
-.btn-normal-forms:hover {
-    background-color: $blue-primary-dark !important;
-    color: $light-secondary !important;
 }
 
 .input-icons i {
@@ -203,7 +140,7 @@ footer {
     min-width: 40px;
     display: inline-block;
     font-size: 1.2rem;
-    color: $blue-primary-light;
+    color: $color-primary;
     margin-top: 3px;
     margin-left: -35px;
     cursor: pointer;
@@ -216,12 +153,9 @@ footer {
 .theme--light.v-input,
 .theme--light.v-input input,
 .theme--light.v-input textarea {
-    color: $blue-primary;
+    color: $color-primary;
 }
 
-.v-text-field--outlined >>> fieldset {
-    border-color: rgba(192, 0, 250, 0.986);
-}
 /**
  * Footer
  *
@@ -238,14 +172,14 @@ footer {
 }
 
 .footer-text {
-    color: $grey-primary;
+    color: $color-terciary;
     font-weight: 700;
     cursor: pointer;
     text-decoration: none;
 }
 
 .footer-text:hover {
-    color: $grey-primary-light;
+    color: $color-primary;
 }
 
 /**
@@ -255,32 +189,28 @@ footer {
  */
 
 .btn-normal {
-    background-color: $blue-secondary !important;
-    color: $light-secondary !important;
+    background-color: $color-secondary !important;
+    color: $color-secondary !important;
     border-radius: 50px;
     padding-left: 4.5rem;
     padding-right: 4.5rem;
 }
 
 .btn-normal:hover {
-    background-color: $blue-primary-dark !important;
-    color: $light-secondary !important;
+    background-color: $color-primary !important;
+    color: $color-secondary !important;
 }
 
 .btn-normal-close {
-    background-color: $alert-fail-dark !important;
+    background-color: $color-secondary !important;
     color: $black !important;
     border-radius: 50px;
 }
 
 .btn-normal-close:hover {
-    background-color: $alert-fail-hover !important;
-    color: $light-secondary !important;
-}
-
-.orange-text {
-    color: $alert-fail;
-}
+    background-color: $color-secondary !important;
+    color: $color-secondary !important;
+}   
 
 /**
  * Form Querys
@@ -354,7 +284,7 @@ footer {
 }
 
 .category {
-    background: $grey-primary;
+    background: $grey;
 }
 
 .category ul a {
@@ -369,7 +299,7 @@ footer {
 }
 
 .category ul:hover {
-    background: $grey-secondary-light;
+    background: $color-secondary;
     border-radius: 10px;
 }
 
@@ -442,7 +372,7 @@ footer {
 .sidebar .nav-links li .sub-menu {
     padding: 6px 20px;
     margin-top: 0px;
-    background: $grey-primary;
+    background: $grey;
     display: none;
 }
 
@@ -451,7 +381,7 @@ footer {
 }
 
 .sidebar .nav-links li .sub-menu a {
-    color: $grey-secondary-light;
+    color: $grey;
     font-size: 15px;
     padding: 10px 10px;
     white-space: nowrap;
@@ -460,7 +390,7 @@ footer {
 
 .sidebar .nav-links li .sub-menu a:hover {
     opacity: 1;
-    color: $light-primary;
+    color: $color-primary;
 }
 
 .sidebar.close .nav-links li .sub-menu {
@@ -513,7 +443,7 @@ footer {
 
 .menu {
     // margin-top: 0.7rem;
-    color: $grey-primary;
+    color: $grey;
 }
 
 .menu:hover {
@@ -597,7 +527,7 @@ footer {
 .left-subtitle {
     display: flex;
     column-gap: 14px;
-    color: $grey-primary-light;
+    color: $grey;
     font-weight: 500;
 }
 
@@ -655,5 +585,5 @@ select:-webkit-autofill {
     > .v-input__control
     > .v-input__slot
     fieldset {
-    border-color: $blue-primary !important;
+    border-color: $color-primary !important;
 }

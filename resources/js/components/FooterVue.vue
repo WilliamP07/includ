@@ -1,66 +1,22 @@
 <template>
-  <!-- Footer -->
   <div data-app>
     <footer class="footer bg-gray mt-2 p-2">
-      <div class="container">
-        <div class="row">
-          <div class="col-12 col-xs-12 col-sm-12 text-center my-auto col-md-3">
-            <a
-              class="mya my-auto footer-text"
-              href="https://es.pinterest.com/"
-              target="_blank"
-            >
-              Pinterest
-            </a>
-          </div>
-          <div
-            class="
-              col-12 col-xs-12 col-sm-12
-              text-center
-              my-auto
-              col-md-6
-              text-center
-            "
+      <div class="row">
+        <div class="col-12 col-sm-12 text-center col-md-6">
+          <a
+            class="footer-text"
+            href="https://es.pinterest.com/"
+            target="_blank"
           >
-            <div class="mya">
-              <img
-                class="logo-footer color-logo"
-                src="/img/pinterest-logo.png"
-              />
-            </div>
-          </div>
-          <div class="col-12 col-xs-12 col-sm-12 text-center my-auto col-md-3">
-            <div class="mya footer-text">
-              Políticas de privacidad
-            </div>
-          </div>
+            IncluD &#169; {{ year }}
+          </a>
         </div>
-      </div>
-      <div class="text-center">
-        <!-- Privacy Policy Dialog -->
-        <v-dialog v-model="dialog" width="800" persistent>
-          <v-card>
-            <v-card-title class="color-secondary">
-              Políticas de privacidad y condiciones de uso</v-card-title
-            >
-            <v-divider></v-divider>
-            <v-card-text>
-              <privacy-terms />
-            </v-card-text>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn class="btn btn-normal" text @click="dialog = false">
-                Cerrar
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <!-- Privacy Policy Dialog -->
+        <div class="col-12 col-sm-12 text-center col-md-6">
+          <div class="mya footer-text">Políticas de privacidad</div>
+        </div>
       </div>
     </footer>
   </div>
-  <!-- Footer -->
 </template>
 
 <script>
@@ -68,6 +24,7 @@ export default {
   data() {
     return {
       dialog: false,
+      year: new Date().getFullYear(),
     };
   },
 };

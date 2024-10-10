@@ -16,25 +16,35 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $roleAdmin = Role::findOrFail(1);
-        $roleUser = Role::findOrFail(2);
+        $rolUser = Role::findOrFail(1);
+        $rolAuthorizer = Role::findOrFail(2);
+        $rolAdmin = Role::findOrFail(3);
+
+        $user = User::create([
+            'id' => 1,
+            'name' => 'Usuario',
+            'email' => 'usuario@gmail.com',
+            'password' => Hash::make('password'),
+            'email_verified_at' => now(),
+        ]);
+        $user->assignRole($rolUser);
+
+        $authorizer = User::create([
+            'id' => 2,
+            'name' => 'Autorizador',
+            'email' => 'autorizador@gmail.com',
+            'password' => Hash::make('password'),
+            'email_verified_at' => now(),
+        ]);
+        $authorizer->assignRole($rolAuthorizer);
 
         $admin = User::create([
-            'id' => 1,
-            'name' => 'admin',
+            'id' => 3,
+            'name' => 'Administrador',
             'email' => 'admin@gmail.com',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
         ]);
-        $admin->assignRole($roleAdmin);
-
-        $user = User::create([
-            'id' => 2,
-            'name' => 'Sara17',
-            'email' => 'sara17@gmail.com',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now(),
-        ]);
-        $user->assignRole($roleUser);
+        $admin->assignRole($rolAdmin);
     }
 }

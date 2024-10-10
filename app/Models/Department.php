@@ -10,7 +10,7 @@ class Department extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'department';
+    protected $table = 'departments';
 
     public $incrementing = true;
 
@@ -19,9 +19,6 @@ class Department extends Model
     protected $fillable = [
         'id',
         'department_name',
-        'min_dpto',
-        'may_dpto',
-        'cod_dpto',
     ];
 
     public $hidden = [

@@ -17,11 +17,8 @@ class Municipality extends Model
     protected $data = ['deleted_at'];
 
     protected $fillable = [
+        'id',
         'name',
-        'mun_min',
-        'mun_may',
-        'dm_cod',
-        'cod_mun',
         'department_id',
     ];
 

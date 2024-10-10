@@ -20,7 +20,7 @@
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 
     <!-- Favicon -->
-    <link rel="icon" href="{{ asset('img/pinterest-logo.png') }}">
+    <link rel="icon" href="{{ asset('logos/logo-includ.png') }}">
     @yield('css')
 
     @yield('header')
@@ -139,9 +139,9 @@
                             <!-- Institution Name -->
                             <div class=" col-sm-4 col-md-6 d-none d-md-block d-lg-block d-xl-block">
                                 <div class="col-4 col-sm-12" style="display: flex; align-items:center">
-                                    <img src="img/pinterest-logo.png" alt="" class="me-2" height="30" width="30">
+                                    {{-- <img src="logos/logo-includ.png" alt="" class="me-2" height="30" width="30"> --}}
                                     <a class="navbar-brand" href="#">
-                                        <h3 class="fw-bold  mb-0">
+                                        <h3 class="fw-bold text-primary mb-0">
                                             {{getenv('APP_NAME')}}
                                         </h3>
                                     </a>
@@ -153,10 +153,10 @@
                                 <div class="col-6 col-md-6 text-right d-none d-md-block d-lg-block d-xl-block">
                                     <div class="row mt-2 pt-1">
                                         <div class=" col-md-12 text-end">
-                                            <a href="{{ url('/login') }}" class="btn btn-normal-nav shadow-none">Iniciar
+                                            <a href="{{ url('/login') }}" class="btn btn-rounded-primary shadow-none">Iniciar
                                                 sesión</a>
                                             <a href="{{ route('register') }}"
-                                                class="btn btn-normal-secondary-nav shadow-none">Registrarme</a>
+                                                class="btn btn-outlined-primary shadow-none">Registrarme</a>
                                         </div>
 
                                     </div>

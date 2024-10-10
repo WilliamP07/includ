@@ -18,6 +18,7 @@
         "laraveles/spanish": "^1.5",
         "leolopez/backup": "^1.0",
         "leolopez/encrypt": "^1.0",
+        "leolopez/crudgeneratormc": "^1.0@RC",
         "maatwebsite/excel": "^3.1",
         "php-open-source-saver/jwt-auth": "^1.4",
         "spatie/laravel-permission": "^5.5"
