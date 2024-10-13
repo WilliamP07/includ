@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EmotionTips;
+use App\Models\Emotion;
+use App\Models\EmotionTip;
 
 use Illuminate\Http\Request;
 use Encrypt;
@@ -21,7 +22,7 @@ class EmotionTipsController extends Controller
 
         // Getting all the records
         if (($request->itemsPerPage == -1)) {
-            $itemsPerPage =  EmotionTips::count();
+            $itemsPerPage =  EmotionTip::count();
             $skip = 0;
         }
 
@@ -30,17 +31,17 @@ class EmotionTipsController extends Controller
 
         $search = (isset($request->search)) ? "%$request->search%" : '%%';
 
-        $emotiontips = EmotionTips::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
+        $emotiontips = EmotionTip::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
         $emotiontips = Encrypt::encryptObject($emotiontips, "id");
 
-        $total = EmotionTips::counterPagination($search);
+        $total = EmotionTip::counterPagination($search);
 
         return response()->json([
             "status" => 200,
-            "message"=>"Registros obtenidos correctamente.",
+            "message" => "Registros obtenidos correctamente.",
             "records" => $emotiontips,
             "total" => $total,
-            "success"=>true,
+            "success" => true,
         ]);
     }
 
@@ -52,29 +53,29 @@ class EmotionTipsController extends Controller
      */
     public function store(Request $request)
     {
-        $emotiontips = new EmotionTips;
+        $emotiontips = new EmotionTip;
 
-		$emotiontips->tip_title = $request->tip_title;
-		$emotiontips->tip_description = $request->tip_description;
-		$emotiontips->status = $request->status;
-		$emotiontips->deleted_at = $request->deleted_at;
+        $emotiontips->tip_title = $request->tip_title;
+        $emotiontips->tip_description = $request->tip_description;
+        $emotiontips->emotion_id = Emotion::where('emotion', $request->emotion)->first()->id;
+        $emotiontips->status = $request->status == null ? 0 : $request->status;
 
         $emotiontips->save();
 
         return response()->json([
-            "status"=>200,
-            "message"=>"Registro creado correctamente.",
-            "success"=>true,
+            "status" => 200,
+            "message" => "Registro creado correctamente.",
+            "success" => true,
         ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\EmotionTips  emotiontips
+     * @param  \App\Models\EmotionTip  emotiontips
      * @return \Illuminate\Http\Response
      */
-    public function show(EmotionTips $emotiontips)
+    public function show(EmotionTip $emotiontips)
     {
         //
     }
@@ -83,32 +84,32 @@ class EmotionTipsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\EmotionTips  $emotiontips
+     * @param  \App\Models\EmotionTip  $emotiontips
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
     {
         $data = Encrypt::decryptArray($request->all(), 'id');
 
-        $emotiontips = EmotionTips::where('id', $data['id'])->first();
-		$emotiontips->tip_title = $request->tip_title;
-		$emotiontips->tip_description = $request->tip_description;
-		$emotiontips->status = $request->status;
-		$emotiontips->deleted_at = $request->deleted_at;
+        $emotiontips = EmotionTip::where('id', $data['id'])->first();
+        $emotiontips->tip_title = $request->tip_title;
+        $emotiontips->tip_description = $request->tip_description;
+        $emotiontips->emotion_id = Emotion::where('emotion', $request->emotion)->first()->id;
+        $emotiontips->status = $request->status == null ? 0 : $request->status;
 
         $emotiontips->save();
 
         return response()->json([
-            "status"=>200,
-            "message"=>"Registro modificado correctamente.",
-            "success"=>true,
+            "status" => 200,
+            "message" => "Registro modificado correctamente.",
+            "success" => true,
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\EmotionTips  $emotiontips
+     * @param  \App\Models\EmotionTip  $emotiontips
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
@@ -119,24 +120,24 @@ class EmotionTipsController extends Controller
             foreach ($data as $item) {
                 $item = json_decode($item);
 
-                EmotionTips::where('id', $id)->delete();
+                EmotionTip::where('id', $id)->delete();
             }
 
             return response()->json([
-                "status"=>200,
-                "message"=>"Registro eliminado correctamente.",
-                "success"=>true,
+                "status" => 200,
+                "message" => "Registro eliminado correctamente.",
+                "success" => true,
             ]);
-        } 
+        }
 
         $id = Encrypt::decryptValue($request->id);
 
-        EmotionTips::where('id', $id)->delete();
+        EmotionTip::where('id', $id)->delete();
 
         return response()->json([
-            "status"=>200,
-            "message"=>"Registro eliminado correctamente.",
-            "success"=>true,
+            "status" => 200,
+            "message" => "Registro eliminado correctamente.",
+            "success" => true,
         ]);
     }
 }

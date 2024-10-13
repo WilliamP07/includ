@@ -13,12 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('interests', function (Blueprint $table) {
+        Schema::create('emotions', function (Blueprint $table) {
             $table->id();
-            $table->string("interest");
-            $table->tinyInteger("status")->comment("1 = public, 0 = private")->default(0);
-            $table->timestamps();
+            $table->string("emotion");
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('interests');
+        Schema::dropIfExists('emotions');
     }
 };

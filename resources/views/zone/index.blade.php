@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <dashboard/>
-</div>
+    <div class="container">
+        <zone />
+    </div>
 @endsection

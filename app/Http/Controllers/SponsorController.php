@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sponsors;
+use App\Models\Sponsor;
 
 use Illuminate\Http\Request;
 use Encrypt;
@@ -21,7 +21,7 @@ class SponsorController extends Controller
 
         // Getting all the records
         if (($request->itemsPerPage == -1)) {
-            $itemsPerPage =  Sponsors::count();
+            $itemsPerPage =  Sponsor::count();
             $skip = 0;
         }
 
@@ -30,10 +30,10 @@ class SponsorController extends Controller
 
         $search = (isset($request->search)) ? "%$request->search%" : '%%';
 
-        $sponsors = Sponsors::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
+        $sponsors = Sponsor::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
         $sponsors = Encrypt::encryptObject($sponsors, "id");
 
-        $total = Sponsors::counterPagination($search);
+        $total = Sponsor::counterPagination($search);
 
         return response()->json([
             "status" => 200,
@@ -52,13 +52,12 @@ class SponsorController extends Controller
      */
     public function store(Request $request)
     {
-        $sponsors = new Sponsors;
+        $sponsors = new Sponsor;
 
         $sponsors->sponsor_name = $request->sponsor_name;
         $sponsors->sponsor_image = $request->sponsor_image;
         $sponsors->sponsor_description = $request->sponsor_description;
-        $sponsors->status = $request->status;
-        $sponsors->deleted_at = $request->deleted_at;
+        $sponsors->status = $request->status == null ? 0 : $request->status;
 
         $sponsors->save();
 
@@ -72,10 +71,10 @@ class SponsorController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Sponsors  sponsors
+     * @param  \App\Models\Sponsor  sponsors
      * @return \Illuminate\Http\Response
      */
-    public function show(Sponsors $sponsors)
+    public function show(Sponsor $sponsors)
     {
         //
     }
@@ -84,19 +83,18 @@ class SponsorController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Sponsors  $sponsors
+     * @param  \App\Models\Sponsor  $sponsors
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
     {
         $data = Encrypt::decryptArray($request->all(), 'id');
 
-        $sponsors = Sponsors::where('id', $data['id'])->first();
+        $sponsors = Sponsor::where('id', $data['id'])->first();
         $sponsors->sponsor_name = $request->sponsor_name;
         $sponsors->sponsor_image = $request->sponsor_image;
         $sponsors->sponsor_description = $request->sponsor_description;
-        $sponsors->status = $request->status;
-        $sponsors->deleted_at = $request->deleted_at;
+        $sponsors->status = $request->status == null ? 0 : $request->status;
 
         $sponsors->save();
 
@@ -110,7 +108,7 @@ class SponsorController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Sponsors  $sponsors
+     * @param  \App\Models\Sponsor  $sponsors
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
@@ -121,7 +119,7 @@ class SponsorController extends Controller
             foreach ($data as $item) {
                 $item = json_decode($item);
 
-                Sponsors::where('id', $id)->delete();
+                Sponsor::where('id', $id)->delete();
             }
 
             return response()->json([
@@ -133,7 +131,7 @@ class SponsorController extends Controller
 
         $id = Encrypt::decryptValue($request->id);
 
-        Sponsors::where('id', $id)->delete();
+        Sponsor::where('id', $id)->delete();
 
         return response()->json([
             "status" => 200,

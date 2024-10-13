@@ -17,7 +17,14 @@ class EmotionTip extends Model
     protected $data = ['deleted_at'];
 
     protected $fillable = [
-        'id', 'tip_title', 'tip_description', 'status', 'deleted_at', 'created_at', 'updated_at', 
+        'id',
+        'tip_title',
+        'tip_description',
+        'emotion_id',
+        'status',
+        'deleted_at',
+        'created_at',
+        'updated_at',
     ];
 
     public $hidden = [
@@ -30,22 +37,24 @@ class EmotionTip extends Model
 
     public static function allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage)
     {
-        return EmotionTip::select('emotion_tips.*', 'emotion_tips.id as id')
-        
-		->where('emotion_tips.tip_title', 'like', $search)
+        return EmotionTip::select('emotion_tips.*', 'emotions.*', 'emotion_tips.id as id')
+            ->join('emotions', 'emotion_tips.emotion_id', '=', 'emotions.id')
 
-        ->skip($skip)
-        ->take($itemsPerPage)
-        ->orderBy("emotion_tips.$sortBy", $sort)
-        ->get();
+            ->where('emotion_tips.tip_title', 'like', $search)
+
+            ->skip($skip)
+            ->take($itemsPerPage)
+            ->orderBy("emotion_tips.$sortBy", $sort)
+            ->get();
     }
 
     public static function counterPagination($search)
     {
-        return EmotionTip::select('emotion_tips.*', 'emotion_tips.id as id')
-        
-		->where('emotion_tips.tip_title', 'like', $search)
+        return EmotionTip::select('emotion_tips.*', 'emotions.*', 'emotion_tips.id as id')
+            ->join('emotions', 'emotion_tips.emotion_id', '=', 'emotions.id')
 
-        ->count();
+            ->where('emotion_tips.tip_title', 'like', $search)
+
+            ->count();
     }
 }

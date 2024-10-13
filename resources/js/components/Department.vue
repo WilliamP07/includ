@@ -48,14 +48,6 @@
         sort-by="id"
         :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
       >
-        <template v-slot:item.status="{ item }">
-          <v-chip
-            style="color: white"
-            :color="item.status == 1 ? '#FF6F15' : '#EBCDDB'"
-          >
-            {{ item.status == 1 ? "Público" : "Privado" }}
-          </v-chip>
-        </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon small class="mr-2" @click="editItem(item)">
             mdi-pencil
@@ -82,12 +74,12 @@
           <v-container>
             <!-- Form -->
             <v-row class="pt-3">
-              <!-- sponsor_name -->
+              <!-- department_name -->
               <v-col cols="12" sm="12" md="12">
                 <base-input
-                  label="Patrocinador"
-                  v-model="$v.editedItem.sponsor_name.$model"
-                  :validation="$v.editedItem.sponsor_name"
+                  label="Departamento"
+                  v-model="$v.editedItem.department_name.$model"
+                  :validation="$v.editedItem.department_name"
                   validationTextType="none"
                   :validationsInput="{
                     required: true,
@@ -95,56 +87,7 @@
                   }"
                 />
               </v-col>
-              <!-- sponsor_name -->
-
-              <!-- sponsor_description -->
-              <v-col cols="12" sm="12" md="12">
-                <base-input
-                  label="Descripción"
-                  v-model="$v.editedItem.sponsor_description.$model"
-                  :validation="$v.editedItem.sponsor_description"
-                  validationTextType="none"
-                  :validationsInput="{
-                    required: true,
-                    minLength: true,
-                  }"
-                />
-              </v-col>
-              <!-- sponsor_description -->
-              <!-- sponsor_image -->
-              <v-col cols="12" sm="12" md="6">
-                <base-input
-                  label="Logo"
-                  v-model="$v.editedItem.sponsor_image.$model"
-                  :validation="$v.editedItem.sponsor_image"
-                  validationTextType="none"
-                  :validationsInput="{
-                    required: true,
-                    minLength: true,
-                  }"
-                />
-              </v-col>
-              <!-- sponsor_image -->
-
-              <!-- status -->
-              <v-col cols="12" sm="12" md="6">
-                <v-checkbox
-                  v-model="$v.editedItem.status.$model"
-                  label="¿Publicar?"
-                  style="margin-top: 0"
-                ></v-checkbox>
-                <!-- <base-input
-                  label="Status"
-                  v-model="$v.editedItem.status.$model"
-                  :validation="$v.editedItem.status"
-                  validationTextType="none"
-                  :validationsInput="{
-                    required: true,
-                    minLength: true,
-                  }"
-                /> -->
-              </v-col>
-              <!-- status -->
+              <!-- department_name -->
             </v-row>
             <!-- Form -->
             <v-row>
@@ -202,7 +145,7 @@
 </template>
 
 <script>
-import sponsorApi from "../apis/sponsorApi";
+import departmentApi from "../apis/departmentApi";
 
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 
@@ -214,29 +157,20 @@ export default {
       dialog: false,
       dialogDelete: false,
       headers: [
-        { text: "PATROCINADOR", value: "sponsor_name" },
-        // { text: "Sponsor Image", value: "sponsor_image" },
-        { text: "DESCRIPCIÓN", value: "sponsor_description" },
-        { text: "ESTADO", value: "status" },
+        { text: "DEPARTAMENTO", value: "department_name" },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
       records: [],
       recordsFiltered: [],
       editedIndex: -1,
-      title: "Patrocinadores",
+      title: "Departamentos",
       totalItems: 0,
       options: {},
       editedItem: {
-        sponsor_name: "",
-        sponsor_image: "",
-        sponsor_description: "",
-        status: "",
+        department_name: "",
       },
       defaultItem: {
-        sponsor_name: "",
-        sponsor_image: "",
-        sponsor_description: "",
-        status: "",
+        department_name: "",
       },
       selectedTab: 0,
       loading: false,
@@ -264,21 +198,9 @@ export default {
   // Validations
   validations: {
     editedItem: {
-      sponsor_name: {
+      department_name: {
         required,
         minLength: minLength(1),
-      },
-      sponsor_image: {
-        // required,
-        // minLength: minLength(1),
-      },
-      sponsor_description: {
-        required,
-        minLength: minLength(1),
-      },
-      status: {
-        // required,
-        // minLength: minLength(1),
       },
     },
   },
@@ -345,7 +267,7 @@ export default {
           this.editedItem
         );
 
-        const { data } = await sponsorApi
+        const { data } = await departmentApi
           .put(`/${edited.id}`, edited)
           .catch((error) => {
             this.updateAlert(
@@ -365,7 +287,7 @@ export default {
         }
       } else {
         //Creating user
-        const { data } = await sponsorApi
+        const { data } = await departmentApi
           .post(null, this.editedItem)
           .catch((error) => {
             this.updateAlert(true, "No fue posible crear el registro.", "fail");
@@ -406,7 +328,7 @@ export default {
     },
 
     async deleteItemConfirm() {
-      const { data } = await sponsorApi
+      const { data } = await departmentApi
         .delete(null, {
           params: {
             selected: this.selected,
@@ -443,7 +365,7 @@ export default {
       //debounce
       clearTimeout(this.debounce);
       this.debounce = setTimeout(async () => {
-        const { data } = await sponsorApi
+        const { data } = await departmentApi
           .get(null, {
             params: this.options,
           })
@@ -455,8 +377,8 @@ export default {
             );
           });
 
-        this.records = data.records;
-        this.recordsFiltered = data.records;
+        this.records = data.departments;
+        this.recordsFiltered = data.departments;
         this.total = data.total;
         this.loading = false;
       }, 500);

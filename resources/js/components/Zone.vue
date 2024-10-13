@@ -12,34 +12,33 @@
       class="mb-2"
     />
     <v-card class="p-3">
-      <v-container>
-        <h2>Zone</h2>
-        <div class="options-table">
-          <v-btn rounded @click="addRecord()" title="Agregar">
-            <v-icon> mdi-plus </v-icon> Agregar
-          </v-btn>
-          <v-icon
-            @click="deleteItem()"
-            title="Eliminar"
-            v-if="selected.length > 0"
+      <v-row class="p-3">
+        <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+          <h2>{{ title }}</h2>
+        </v-col>
+        <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end">
+          <v-btn
+            rounded
+            @click="addRecord()"
+            class="mb-2 btn-normal no-uppercase"
+            title="Agregar"
           >
-            mdi-delete
-          </v-icon>
-        </div>
+            Agregar
+          </v-btn>
+        </v-col>
         <v-col cols="12" sm="12" md="12" lg="4" xl="4" class="pl-0 pb-0 pr-0">
           <v-text-field
-            class="mt-3"
+            class=""
             dense
+            outlined
             label="Buscar"
             type="text"
             v-model="options.search"
           ></v-text-field>
         </v-col>
-      </v-container>
+      </v-row>
       <v-data-table
         v-model="selected"
-        :single-select="false"
-        show-select
         :search="options.search"
         :headers="headers"
         :items="recordsFiltered"
@@ -63,7 +62,7 @@
       </v-data-table>
     </v-card>
 
-    <v-dialog v-model="dialog" max-width="90%" persistent>
+    <v-dialog v-model="dialog" max-width="700" persistent>
       <v-card class="flexcard" height="100%">
         <v-card-title>
           <h1 class="mx-auto pt-3 mb-3 text-center black-secondary">
@@ -76,9 +75,9 @@
             <!-- Form -->
             <v-row class="pt-3">
               <!-- zone_name -->
-              <v-col cols="12" sm="12" md="4">
+              <v-col cols="12" sm="12" md="12">
                 <base-input
-                  label="Zone Name"
+                  label="Zona"
                   v-model="$v.editedItem.zone_name.$model"
                   :validation="$v.editedItem.zone_name"
                   validationTextType="none"
@@ -158,13 +157,13 @@ export default {
       dialog: false,
       dialogDelete: false,
       headers: [
-        { text: "Zone Name", value: "zone_name" },
+        { text: "ZONA", value: "zone_name" },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
       records: [],
       recordsFiltered: [],
       editedIndex: -1,
-      title: "Zone",
+      title: "Zonas",
       totalItems: 0,
       options: {},
       editedItem: {

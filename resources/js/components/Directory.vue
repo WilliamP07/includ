@@ -1,6 +1,6 @@
 <template>
   <div data-app>
-      <alert-time-out
+    <alert-time-out
       :redirect="redirectSessionFinished"
       @redirect="updateTimeOut($event)"
     />
@@ -11,35 +11,34 @@
       @show-alert="updateAlert($event)"
       class="mb-2"
     />
-    <v-card class="p-3">
-      <v-container>
-        <h2>Directory</h2>
-        <div class="options-table">
-          <v-btn rounded @click="addRecord()" title="Agregar">
-            <v-icon> mdi-plus </v-icon> Agregar
-          </v-btn>
-          <v-icon
-            @click="deleteItem()"
-            title="Eliminar"
-            v-if="selected.length > 0"
+    <v-card class="p-3" style="border-radius: 16px">
+      <v-row class="p-3">
+        <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+          <h2>{{ title }}</h2>
+        </v-col>
+        <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end">
+          <v-btn
+            rounded
+            @click="addRecord()"
+            class="mb-2 btn-normal no-uppercase"
+            title="Agregar"
           >
-            mdi-delete
-          </v-icon>
-        </div>
+            Agregar
+          </v-btn>
+        </v-col>
         <v-col cols="12" sm="12" md="12" lg="4" xl="4" class="pl-0 pb-0 pr-0">
           <v-text-field
-            class="mt-3"
+            class=""
             dense
+            outlined
             label="Buscar"
             type="text"
             v-model="options.search"
           ></v-text-field>
         </v-col>
-      </v-container>
+      </v-row>
       <v-data-table
         v-model="selected"
-        :single-select="false"
-        show-select
         :search="options.search"
         :headers="headers"
         :items="recordsFiltered"
@@ -49,6 +48,14 @@
         sort-by="id"
         :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
       >
+        <template v-slot:item.status="{ item }">
+          <v-chip
+            style="color: white"
+            :color="item.status == 1 ? '#FF6F15' : '#EBCDDB'"
+          >
+            {{ item.status == 1 ? 'Público' : 'Privado'}}
+          </v-chip>
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon small class="mr-2" @click="editItem(item)">
             mdi-pencil
@@ -63,7 +70,7 @@
       </v-data-table>
     </v-card>
 
-    <v-dialog v-model="dialog" max-width="90%" persistent>
+    <v-dialog v-model="dialog" max-width="700" persistent>
       <v-card class="flexcard" height="100%">
         <v-card-title>
           <h1 class="mx-auto pt-3 mb-3 text-center black-secondary">
@@ -75,88 +82,87 @@
           <v-container>
             <!-- Form -->
             <v-row class="pt-3">
-              
-        <!-- name -->
-            <v-col cols="12" sm="12" md="4">
+              <!-- name -->
+              <v-col cols="12" sm="12" md="12">
                 <base-input
-                label="Name"
-                v-model="$v.editedItem.name.$model"
-                :validation="$v.editedItem.name"
-                validationTextType="none"
-                :validationsInput="{
+                  label="Nombre"
+                  v-model="$v.editedItem.name.$model"
+                  :validation="$v.editedItem.name"
+                  validationTextType="none"
+                  :validationsInput="{
                     required: true,
                     minLength: true,
-                }"
+                  }"
                 />
-            </v-col>
-        <!-- name -->
+              </v-col>
+              <!-- name -->
 
-        
-        <!-- phone -->
-            <v-col cols="12" sm="12" md="4">
+              <!-- phone -->
+              <v-col cols="12" sm="12" md="6">
                 <base-input
-                label="Phone"
-                v-model="$v.editedItem.phone.$model"
-                :validation="$v.editedItem.phone"
-                validationTextType="none"
-                :validationsInput="{
+                  label="Teléfono"
+                  v-model="$v.editedItem.phone.$model"
+                  :validation="$v.editedItem.phone"
+                  validationTextType="none"
+                  :validationsInput="{
                     required: true,
                     minLength: true,
-                }"
+                  }"
+                  v-mask="'####-####'"
                 />
-            </v-col>
-        <!-- phone -->
+              </v-col>
+              <!-- phone -->
 
-        
-        <!-- address -->
-            <v-col cols="12" sm="12" md="4">
-                <base-input
-                label="Address"
-                v-model="$v.editedItem.address.$model"
-                :validation="$v.editedItem.address"
-                validationTextType="none"
-                :validationsInput="{
-                    required: true,
-                    minLength: true,
-                }"
-                />
-            </v-col>
-        <!-- address -->
-
-        
-        <!-- zone_name -->
-            <v-col cols="12" sm="12" md="4">
+              <!-- zone_name -->
+              <v-col cols="12" sm="12" md="6">
                 <base-select-search
-                    label="Zone Name"
-                    v-model.trim="$v.editedItem.zone_name.$model"
-                    :items="zones"
-                    item="zone_name"
-                    :validation="$v.editedItem.zone_name"
-                    :validationsInput="{
-                        required: true,
-                        minLength: true,
-                    }"
-                />
-            </v-col>
-        <!-- zone_name -->
-
-        
-        <!-- status -->
-            <v-col cols="12" sm="12" md="4">
-                <base-input
-                label="Status"
-                v-model="$v.editedItem.status.$model"
-                :validation="$v.editedItem.status"
-                validationTextType="none"
-                :validationsInput="{
+                  label="Zona"
+                  v-model.trim="$v.editedItem.zone_name.$model"
+                  :items="zones"
+                  item="zone_name"
+                  :validation="$v.editedItem.zone_name"
+                  :validationsInput="{
                     required: true,
                     minLength: true,
-                }"
+                  }"
                 />
-            </v-col>
-        <!-- status -->
+              </v-col>
+              <!-- zone_name -->
 
-        
+              <!-- address -->
+              <v-col cols="12" sm="12" md="12">
+                <base-input
+                  label="Dirección"
+                  v-model="$v.editedItem.address.$model"
+                  :validation="$v.editedItem.address"
+                  validationTextType="none"
+                  :validationsInput="{
+                    required: true,
+                    minLength: true,
+                  }"
+                />
+              </v-col>
+              <!-- address -->
+
+              <!-- status -->
+              <v-col cols="12" sm="12" md="6">
+                <v-checkbox
+                  v-model="$v.editedItem.status.$model"
+                  label="¿Publicar?"
+                  style="margin-top: 0"
+                ></v-checkbox>
+                <!-- <base-input
+                  label="Estado"
+                  v-model="$v.editedItem.status.$model"
+                  :validation="$v.editedItem.status"
+                  validationTextType="none"
+                  :validationsInput="{
+                    required: true,
+                    minLength: true,
+                  }"
+                /> -->
+              </v-col>
+              <!-- status -->
             </v-row>
             <!-- Form -->
             <v-row>
@@ -214,9 +220,8 @@
 </template>
 
 <script>
-
 import directoryApi from "../apis/directoryApi";
-import zoneApi from "../apis/zoneApi"
+import zoneApi from "../apis/zoneApi";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 
 export default {
@@ -227,24 +232,32 @@ export default {
       dialog: false,
       dialogDelete: false,
       headers: [
-        
-		{ text: "Name", value: "name" },
-		{ text: "Phone", value: "phone" },
-		{ text: "Address", value: "address" },
-		{ text: "Status", value: "status" },
+        { text: "NOMBRE", value: "name" },
+        { text: "TELÉFONO", value: "phone" },
+        { text: "DIRECCIÓN", value: "address" },
+        { text: "ZONA", value: "zone_name" },
+        { text: "ESTADO", value: "status" },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
       records: [],
       recordsFiltered: [],
       editedIndex: -1,
-      title: "Directory",
+      title: "Directorio",
       totalItems: 0,
       options: {},
       editedItem: {
-        		name: "",		phone: "",		address: "",		zone_name: "",		status: "",
+        name: "",
+        phone: "",
+        address: "",
+        zone_name: "",
+        status: "",
       },
       defaultItem: {
-        		name: "",		phone: "",		address: "",		zone_name: "",		status: "",
+        name: "",
+        phone: "",
+        address: "",
+        zone_name: "",
+        status: "",
       },
       selectedTab: 0,
       loading: false,
@@ -255,7 +268,6 @@ export default {
       redirectSessionFinished: false,
       alertTimeOut: 0,
       zones: [],
-
     };
   },
 
@@ -275,44 +287,29 @@ export default {
   validations: {
     editedItem: {
       name: {
-		required,
-		minLength: minLength(1),
-},phone: {
-		required,
-		minLength: minLength(1),
-},address: {
-		required,
-		minLength: minLength(1),
-},zone_name: {
-		required,
-		minLength: minLength(1),
-},
-status: {
-		required,
-		minLength: minLength(1),
-},
+        required,
+        minLength: minLength(1),
+      },
+      phone: {
+        required,
+        minLength: minLength(1),
+      },
+      address: {
+        required,
+        minLength: minLength(1),
+      },
+      zone_name: {
+        required,
+        minLength: minLength(1),
+      },
+      status: {
+      },
     },
   },
 
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Nuevo registro" : "Editar registro";
-    },
-  },
-
-  watch: {
-    options: {
-      handler() {
-        this.getDataFromApi();
-      },
-      deep: false,
-      dirty: false,
-    },
-    dialog(val) {
-      val || this.close();
-    },
-    dialogBlock(val) {
-      val || this.closeBlock();
     },
   },
 
@@ -330,19 +327,21 @@ status: {
       let requests = [
         this.getDataFromApi(),
         zoneApi.get(null, {
-		params: { itemsPerPage: -1 },
-	}),
+          params: { itemsPerPage: -1 },
+        }),
       ];
 
       const responses = await Promise.all(requests).catch((error) => {
         this.updateAlert(true, "No fue posible obtener el registro.", "fail");
 
-        this.redirectSessionFinished = lib.verifySessionFinished(error.response.status, 419);
+        this.redirectSessionFinished = lib.verifySessionFinished(
+          error.response.status,
+          419
+        );
       });
 
       if (responses) {
-        this.zones = responses[1].data.zones;
-
+        this.zones = responses[1].data.records;
       }
 
       this.loading = false;
@@ -379,13 +378,20 @@ status: {
         const { data } = await directoryApi
           .put(`/${edited.id}`, edited)
           .catch((error) => {
-            this.updateAlert(true, "No fue posible actualizar el registro.", "fail");
+            this.updateAlert(
+              true,
+              "No fue posible actualizar el registro.",
+              "fail"
+            );
 
-            this.redirectSessionFinished = lib.verifySessionFinished(error.response.status, 419);
+            this.redirectSessionFinished = lib.verifySessionFinished(
+              error.response.status,
+              419
+            );
           });
 
         if (data.success) {
-            this.updateAlert(true, data.message, "success");
+          this.updateAlert(true, data.message, "success");
         }
       } else {
         //Creating user
@@ -394,7 +400,10 @@ status: {
           .catch((error) => {
             this.updateAlert(true, "No fue posible crear el registro.", "fail");
 
-            this.redirectSessionFinished = lib.verifySessionFinished(error.response.status, 419);
+            this.redirectSessionFinished = lib.verifySessionFinished(
+              error.response.status,
+              419
+            );
           });
 
         if (data.success) {
@@ -432,12 +441,19 @@ status: {
           params: {
             selected: this.selected,
             id: this.editedItem.id,
-          }
+          },
         })
         .catch((error) => {
-            this.updateAlert(true, "No fue posible eliminar el registro.", "fail");
+          this.updateAlert(
+            true,
+            "No fue posible eliminar el registro.",
+            "fail"
+          );
 
-            this.redirectSessionFinished = lib.verifySessionFinished(error.response.status, 419);
+          this.redirectSessionFinished = lib.verifySessionFinished(
+            error.response.status,
+            419
+          );
           this.close();
         });
 
@@ -462,7 +478,11 @@ status: {
             params: this.options,
           })
           .catch((error) => {
-            this.updateAlert(true, "No fue posible obtener los registros.", "fail");
+            this.updateAlert(
+              true,
+              "No fue posible obtener los registros.",
+              "fail"
+            );
           });
 
         this.records = data.records;

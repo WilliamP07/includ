@@ -17,7 +17,15 @@ class Directory extends Model
     protected $data = ['deleted_at'];
 
     protected $fillable = [
-        'id', 'name', 'phone', 'address', 'zone_id', 'status', 'deleted_at', 'created_at', 'updated_at', 
+        'id',
+        'name',
+        'phone',
+        'address',
+        'zone_id',
+        'status',
+        'deleted_at',
+        'created_at',
+        'updated_at',
     ];
 
     public $hidden = [
@@ -31,23 +39,23 @@ class Directory extends Model
     public static function allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage)
     {
         return Directory::select('directories.*', 'zones.*', 'directories.id as id')
-        ->join('zones', 'directories.zone_id', '=', 'zones.id')
+            ->join('zones', 'directories.zone_id', '=', 'zones.id')
 
-		->where('directories.name', 'like', $search)
+            ->where('directories.name', 'like', $search)
 
-        ->skip($skip)
-        ->take($itemsPerPage)
-        ->orderBy("directories.$sortBy", $sort)
-        ->get();
+            ->skip($skip)
+            ->take($itemsPerPage)
+            ->orderBy("directories.$sortBy", $sort)
+            ->get();
     }
 
     public static function counterPagination($search)
     {
         return Directory::select('directories.*', 'zones.*', 'directories.id as id')
-        ->join('zones', 'directories.zone_id', '=', 'zones.id')
+            ->join('zones', 'directories.zone_id', '=', 'zones.id')
 
-		->where('directories.name', 'like', $search)
+            ->where('directories.name', 'like', $search)
 
-        ->count();
+            ->count();
     }
 }

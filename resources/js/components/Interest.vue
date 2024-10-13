@@ -1,6 +1,6 @@
 <template>
   <div data-app>
-      <alert-time-out
+    <alert-time-out
       :redirect="redirectSessionFinished"
       @redirect="updateTimeOut($event)"
     />
@@ -12,34 +12,33 @@
       class="mb-2"
     />
     <v-card class="p-3">
-      <v-container>
-        <h2>Interest</h2>
-        <div class="options-table">
-          <v-btn rounded @click="addRecord()" title="Agregar">
-            <v-icon> mdi-plus </v-icon> Agregar
-          </v-btn>
-          <v-icon
-            @click="deleteItem()"
-            title="Eliminar"
-            v-if="selected.length > 0"
+      <v-row class="p-3">
+        <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+          <h2>{{ title }}</h2>
+        </v-col>
+        <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end">
+          <v-btn
+            rounded
+            @click="addRecord()"
+            class="mb-2 btn-normal no-uppercase"
+            title="Agregar"
           >
-            mdi-delete
-          </v-icon>
-        </div>
+            Agregar
+          </v-btn>
+        </v-col>
         <v-col cols="12" sm="12" md="12" lg="4" xl="4" class="pl-0 pb-0 pr-0">
           <v-text-field
-            class="mt-3"
+            class=""
             dense
+            outlined
             label="Buscar"
             type="text"
             v-model="options.search"
           ></v-text-field>
         </v-col>
-      </v-container>
+      </v-row>
       <v-data-table
         v-model="selected"
-        :single-select="false"
-        show-select
         :search="options.search"
         :headers="headers"
         :items="recordsFiltered"
@@ -49,6 +48,14 @@
         sort-by="id"
         :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
       >
+        <template v-slot:item.status="{ item }">
+          <v-chip
+            style="color: white"
+            :color="item.status == 1 ? '#FF6F15' : '#EBCDDB'"
+          >
+            {{ item.status == 1 ? "Público" : "Privado" }}
+          </v-chip>
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon small class="mr-2" @click="editItem(item)">
             mdi-pencil
@@ -63,7 +70,7 @@
       </v-data-table>
     </v-card>
 
-    <v-dialog v-model="dialog" max-width="90%" persistent>
+    <v-dialog v-model="dialog" max-width="700" persistent>
       <v-card class="flexcard" height="100%">
         <v-card-title>
           <h1 class="mx-auto pt-3 mb-3 text-center black-secondary">
@@ -75,39 +82,40 @@
           <v-container>
             <!-- Form -->
             <v-row class="pt-3">
-              
-        <!-- interest -->
-            <v-col cols="12" sm="12" md="4">
+              <!-- interest -->
+              <v-col cols="12" sm="12" md="12">
                 <base-input
-                label="Interest"
-                v-model="$v.editedItem.interest.$model"
-                :validation="$v.editedItem.interest"
-                validationTextType="none"
-                :validationsInput="{
+                  label="Intereses"
+                  v-model="$v.editedItem.interest.$model"
+                  :validation="$v.editedItem.interest"
+                  validationTextType="none"
+                  :validationsInput="{
                     required: true,
                     minLength: true,
-                }"
+                  }"
                 />
-            </v-col>
-        <!-- interest -->
+              </v-col>
+              <!-- interest -->
 
-        
-        <!-- status -->
-            <v-col cols="12" sm="12" md="4">
-                <base-input
-                label="Status"
-                v-model="$v.editedItem.status.$model"
-                :validation="$v.editedItem.status"
-                validationTextType="none"
-                :validationsInput="{
+              <!-- status -->
+              <v-col cols="12" sm="12" md="6">
+                <v-checkbox
+                  v-model="$v.editedItem.status.$model"
+                  label="¿Publicar?"
+                  style="margin-top: 0"
+                ></v-checkbox>
+                <!-- <base-input
+                  label="Estado"
+                  v-model="$v.editedItem.status.$model"
+                  :validation="$v.editedItem.status"
+                  validationTextType="none"
+                  :validationsInput="{
                     required: true,
                     minLength: true,
-                }"
-                />
-            </v-col>
-        <!-- status -->
-
-        
+                  }"
+                /> -->
+              </v-col>
+              <!-- status -->
             </v-row>
             <!-- Form -->
             <v-row>
@@ -165,7 +173,6 @@
 </template>
 
 <script>
-
 import interestApi from "../apis/interestApi";
 
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
@@ -178,22 +185,23 @@ export default {
       dialog: false,
       dialogDelete: false,
       headers: [
-        
-		{ text: "Interest", value: "interest" },
-		{ text: "Status", value: "status" },
+        { text: "INTERESES", value: "interest" },
+        { text: "ESTADO", value: "status" },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
       records: [],
       recordsFiltered: [],
       editedIndex: -1,
-      title: "Interest",
+      title: "Intereses",
       totalItems: 0,
       options: {},
       editedItem: {
-        		interest: "",		status: "",
+        interest: "",
+        status: "",
       },
       defaultItem: {
-        		interest: "",		status: "",
+        interest: "",
+        status: "",
       },
       selectedTab: 0,
       loading: false,
@@ -203,7 +211,6 @@ export default {
       showAlert: false,
       redirectSessionFinished: false,
       alertTimeOut: 0,
-      
     };
   },
 
@@ -223,34 +230,16 @@ export default {
   validations: {
     editedItem: {
       interest: {
-		required,
-		minLength: minLength(1),
-},status: {
-		required,
-		minLength: minLength(1),
-},
+        required,
+        minLength: minLength(1),
+      },
+      status: {},
     },
   },
 
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Nuevo registro" : "Editar registro";
-    },
-  },
-
-  watch: {
-    options: {
-      handler() {
-        this.getDataFromApi();
-      },
-      deep: false,
-      dirty: false,
-    },
-    dialog(val) {
-      val || this.close();
-    },
-    dialogBlock(val) {
-      val || this.closeBlock();
     },
   },
 
@@ -265,19 +254,18 @@ export default {
       this.records = [];
       this.recordsFiltered = [];
 
-      let requests = [
-        this.getDataFromApi(),
-        
-      ];
+      let requests = [this.getDataFromApi()];
 
       const responses = await Promise.all(requests).catch((error) => {
         this.updateAlert(true, "No fue posible obtener el registro.", "fail");
 
-        this.redirectSessionFinished = lib.verifySessionFinished(error.response.status, 419);
+        this.redirectSessionFinished = lib.verifySessionFinished(
+          error.response.status,
+          419
+        );
       });
 
       if (responses) {
-        
       }
 
       this.loading = false;
@@ -314,13 +302,20 @@ export default {
         const { data } = await interestApi
           .put(`/${edited.id}`, edited)
           .catch((error) => {
-            this.updateAlert(true, "No fue posible actualizar el registro.", "fail");
+            this.updateAlert(
+              true,
+              "No fue posible actualizar el registro.",
+              "fail"
+            );
 
-            this.redirectSessionFinished = lib.verifySessionFinished(error.response.status, 419);
+            this.redirectSessionFinished = lib.verifySessionFinished(
+              error.response.status,
+              419
+            );
           });
 
         if (data.success) {
-            this.updateAlert(true, data.message, "success");
+          this.updateAlert(true, data.message, "success");
         }
       } else {
         //Creating user
@@ -329,7 +324,10 @@ export default {
           .catch((error) => {
             this.updateAlert(true, "No fue posible crear el registro.", "fail");
 
-            this.redirectSessionFinished = lib.verifySessionFinished(error.response.status, 419);
+            this.redirectSessionFinished = lib.verifySessionFinished(
+              error.response.status,
+              419
+            );
           });
 
         if (data.success) {
@@ -367,12 +365,19 @@ export default {
           params: {
             selected: this.selected,
             id: this.editedItem.id,
-          }
+          },
         })
         .catch((error) => {
-            this.updateAlert(true, "No fue posible eliminar el registro.", "fail");
+          this.updateAlert(
+            true,
+            "No fue posible eliminar el registro.",
+            "fail"
+          );
 
-            this.redirectSessionFinished = lib.verifySessionFinished(error.response.status, 419);
+          this.redirectSessionFinished = lib.verifySessionFinished(
+            error.response.status,
+            419
+          );
           this.close();
         });
 
@@ -397,7 +402,11 @@ export default {
             params: this.options,
           })
           .catch((error) => {
-            this.updateAlert(true, "No fue posible obtener los registros.", "fail");
+            this.updateAlert(
+              true,
+              "No fue posible obtener los registros.",
+              "fail"
+            );
           });
 
         this.records = data.records;

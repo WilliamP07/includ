@@ -35,54 +35,52 @@
                     <i class="material-icons md-36 mx-auto  mt-0 pt-0">menu</i>
                 </li>
 
-                <li class="text-center mt-5 mb-5">
-                    <a href="{{ url('/home') }}">
-                    <p class="link my-2 mx-auto fw-bold text-black" style="font-size: 34px">Pinspire</p>
-                    </a>
-                </li>
-
                 @auth
                     <!-- Home -->
-                    <li class="text-center pb-1 mt-5 mb-5">
-                        <a href="{{ url('/home') }}">
-                            <p class="link mx-auto mx-2 my-4 fw-bold text-black" style="font-size: 16px;">Inicio</p>
-                            <p class="link mx-auto mx-2 my-4 fw-bold text-black" style="font-size: 16px;">Crear</p>
-                        </a>
-                    </li>
-                    <!-- Home -->
-                    <!-- Home -->
-                    <li class="text-center pb-1 mt-5 mb-5" style="background-color: #d9c6dc !important; border-radius: 8px;">
-                        <a href="{{ url('/home') }}">
-                            <p class="link mx-2 my-2 text-black fw-bold" style="font-size: 14px">Opción 1</p>
-                        </a>
-                    </li>
-                    <!-- Home -->
-                    <!-- notifications -->
-                    <li class="text-center pb-1 mt-5">
+                      <li class="text-center pb-1">
                         <a href="{{ url('/home') }}" class="text-center">
-                            <i class="material-icons md-18 mx-auto">notifications</i>
+                            <i class="material-icons md-18 mx-auto">dashboard</i>
+                        </a>
+                        <a href="{{ url('/home') }}">
+                            <p class="link mx-auto text-white fw-bold">Dashboard</p>
                         </a>
                     </li>
-                    <!-- notifications -->
-                    <!-- Comment -->
-                    <li class="text-center pb-1">
-                        <a href="{{ url('/home') }}" class="text-center">
-                            <i class="material-icons md-18 mx-auto">comment</i>
-                        </a>
-                    </li>
-                    <!-- Comment -->
-                    <!-- person -->
-                    <li class="text-center pb-1">
-                        <a href="{{ url('/profile') }}" class="text-center">
-                            <i class="material-icons md-18 mx-auto">person</i>
-                        </a>
-                    </li>
-                    <!-- person -->
-                    <!-- Logout -->
+                    <!-- Home -->
+
+                       @if (auth()->user()->hasRole('Administrador') == 'Administrador')
+                        <li>
+                            <div class="icon-link pb-1">
+                                <a href="#" class="arrow text-center">
+                                    <i class="material-icons md-18 mx-auto">settings</i>
+                                </a>
+                                <p class="link text-white fw-bold" style="padding-left: 4px;">Administración</p>
+                            </div>
+                            <ul class="sub-menu">
+                                <li><a class="text-white fw-bold" href="{{ url('/genders') }}">Géneros</a></li>
+                                <li><a class="text-white fw-bold" href="{{ url('/interests') }}">Intereses</a></li>
+                                <li><a class="text-white fw-bold" href="{{ url('/sponsors') }}">Patrocinadores</a></li>
+                                <li><a class="text-white fw-bold" href="{{ url('/zones') }}">Zonas</a></li>
+                                <li><a class="text-white fw-bold" href="{{ url('/directories') }}">Directorio</a></li>
+                                <li><a class="text-white fw-bold" href="{{ url('/departments') }}">Departamentos</a></li>
+                                <li><a class="text-white fw-bold" href="{{ url('/emotion-tips') }}">Consejos</a></li>
+                                <li><a class="text-white fw-bold" href="{{ url('/emotions') }}">Emociones</a></li>
+                                <li><a class="text-white fw-bold" href="{{ url('/posts') }}">Publicaciones</a></li>
+                                <li><a class="text-white fw-bold" href="{{ url('/users') }}">Juegos</a></li>
+                                <li><a class="text-white fw-bold" href="{{ url('/games') }}">Usuarios</a></li>
+
+                            </ul>
+                        </li>
+                    @endif
+               
+                  <!-- Logout -->
                     <li class="text-center pb-1">
                         <a href="{{ route('register') }}" class="text-center"
                             onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                             <i class="material-icons md-18 mx-auto">logout</i>
+                        </a>
+                        <a href="{{ route('logout') }}"
+                            onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                            <p class="link mx-auto text-white fw-bold">Cerrar sesión</p>
                         </a>
                     </li>
                     <!-- Logout -->

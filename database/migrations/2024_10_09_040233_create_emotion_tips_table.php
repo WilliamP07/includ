@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string("tip_title");
             $table->string("tip_description");
-            $table->tinyInteger("status")->comment("1 = public, 0 = private");
+            $table->foreignId('emotion_id')->constrained('emotions');
+            $table->tinyInteger("status")->comment("1 = public, 0 = private")->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

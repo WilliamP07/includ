@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string("sponsor_name");
             $table->string("sponsor_image");
             $table->string("sponsor_description");
-            $table->tinyInteger("status")->comment("1 = public, 0 = private");
+            $table->tinyInteger("status")->comment("1 = public, 0 = private")->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

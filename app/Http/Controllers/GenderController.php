@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Genders;
+use App\Models\Gender;
 
 use Illuminate\Http\Request;
 use Encrypt;
@@ -21,7 +21,7 @@ class GenderController extends Controller
 
         // Getting all the records
         if (($request->itemsPerPage == -1)) {
-            $itemsPerPage =  Genders::count();
+            $itemsPerPage =  Gender::count();
             $skip = 0;
         }
 
@@ -30,10 +30,10 @@ class GenderController extends Controller
 
         $search = (isset($request->search)) ? "%$request->search%" : '%%';
 
-        $genders = Genders::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
+        $genders = Gender::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
         $genders = Encrypt::encryptObject($genders, "id");
 
-        $total = Genders::counterPagination($search);
+        $total = Gender::counterPagination($search);
 
         return response()->json([
             "status" => 200,
@@ -52,10 +52,9 @@ class GenderController extends Controller
      */
     public function store(Request $request)
     {
-        $genders = new Genders;
+        $genders = new Gender;
 
 		$genders->gender = $request->gender;
-		$genders->deleted_at = $request->deleted_at;
 
         $genders->save();
 
@@ -69,10 +68,10 @@ class GenderController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Genders  genders
+     * @param  \App\Models\Gender  genders
      * @return \Illuminate\Http\Response
      */
-    public function show(Genders $genders)
+    public function show(Gender $genders)
     {
         //
     }
@@ -81,16 +80,15 @@ class GenderController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Genders  $genders
+     * @param  \App\Models\Gender  $genders
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
     {
         $data = Encrypt::decryptArray($request->all(), 'id');
 
-        $genders = Genders::where('id', $data['id'])->first();
+        $genders = Gender::where('id', $data['id'])->first();
 		$genders->gender = $request->gender;
-		$genders->deleted_at = $request->deleted_at;
 
         $genders->save();
 
@@ -104,7 +102,7 @@ class GenderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Genders  $genders
+     * @param  \App\Models\Gender  $genders
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
@@ -115,7 +113,7 @@ class GenderController extends Controller
             foreach ($data as $item) {
                 $item = json_decode($item);
 
-                Genders::where('id', $id)->delete();
+                Gender::where('id', $id)->delete();
             }
 
             return response()->json([
@@ -127,7 +125,7 @@ class GenderController extends Controller
 
         $id = Encrypt::decryptValue($request->id);
 
-        Genders::where('id', $id)->delete();
+        Gender::where('id', $id)->delete();
 
         return response()->json([
             "status"=>200,

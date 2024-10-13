@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Zones;
+use App\Models\Zone;
 
 use Illuminate\Http\Request;
 use Encrypt;
@@ -21,7 +21,7 @@ class ZoneController extends Controller
 
         // Getting all the records
         if (($request->itemsPerPage == -1)) {
-            $itemsPerPage =  Zones::count();
+            $itemsPerPage =  Zone::count();
             $skip = 0;
         }
 
@@ -30,10 +30,10 @@ class ZoneController extends Controller
 
         $search = (isset($request->search)) ? "%$request->search%" : '%%';
 
-        $zones = Zones::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
+        $zones = Zone::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
         $zones = Encrypt::encryptObject($zones, "id");
 
-        $total = Zones::counterPagination($search);
+        $total = Zone::counterPagination($search);
 
         return response()->json([
             "status" => 200,
@@ -52,10 +52,9 @@ class ZoneController extends Controller
      */
     public function store(Request $request)
     {
-        $zones = new Zones;
+        $zones = new Zone;
 
         $zones->zone_name = $request->zone_name;
-        $zones->deleted_at = $request->deleted_at;
 
         $zones->save();
 
@@ -72,7 +71,7 @@ class ZoneController extends Controller
      * @param  \App\Models\Zones  zones
      * @return \Illuminate\Http\Response
      */
-    public function show(Zones $zones)
+    public function show(Zone $zones)
     {
         //
     }
@@ -88,9 +87,8 @@ class ZoneController extends Controller
     {
         $data = Encrypt::decryptArray($request->all(), 'id');
 
-        $zones = Zones::where('id', $data['id'])->first();
+        $zones = Zone::where('id', $data['id'])->first();
         $zones->zone_name = $request->zone_name;
-        $zones->deleted_at = $request->deleted_at;
 
         $zones->save();
 
@@ -115,7 +113,7 @@ class ZoneController extends Controller
             foreach ($data as $item) {
                 $item = json_decode($item);
 
-                Zones::where('id', $id)->delete();
+                Zone::where('id', $id)->delete();
             }
 
             return response()->json([
@@ -127,7 +125,7 @@ class ZoneController extends Controller
 
         $id = Encrypt::decryptValue($request->id);
 
-        Zones::where('id', $id)->delete();
+        Zone::where('id', $id)->delete();
 
         return response()->json([
             "status" => 200,

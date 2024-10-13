@@ -18,8 +18,13 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UserSeeder::class,
             DepartmentSeeder::class,
-            MunicipalitySeeder::class,
-            // PostSeeder::class,
+            GenderSeeder::class,
+            InterestSeeder::class,
+            ZoneSeeder::class,
+            EmotionSeeder::class,
+            EmotionTipsSeeder::class,
+            DirectorySeeder::class,
+            SponsorSeeder::class,
         ]);
     }
 }

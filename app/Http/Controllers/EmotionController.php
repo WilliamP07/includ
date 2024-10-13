@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Interest;
+use App\Models\Emotion;
 
 use Illuminate\Http\Request;
 use Encrypt;
 
-class InterestController extends Controller
+class EmotionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,7 +21,7 @@ class InterestController extends Controller
 
         // Getting all the records
         if (($request->itemsPerPage == -1)) {
-            $itemsPerPage =  Interest::count();
+            $itemsPerPage =  Emotion::count();
             $skip = 0;
         }
 
@@ -30,17 +30,17 @@ class InterestController extends Controller
 
         $search = (isset($request->search)) ? "%$request->search%" : '%%';
 
-        $interests = Interest::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
-        $interests = Encrypt::encryptObject($interests, "id");
+        $emotions = Emotion::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
+        $emotions = Encrypt::encryptObject($emotions, "id");
 
-        $total = Interest::counterPagination($search);
+        $total = Emotion::counterPagination($search);
 
         return response()->json([
             "status" => 200,
-            "message"=>"Registros obtenidos correctamente.",
-            "records" => $interests,
+            "message" => "Registros obtenidos correctamente.",
+            "records" => $emotions,
             "total" => $total,
-            "success"=>true,
+            "success" => true,
         ]);
     }
 
@@ -52,27 +52,26 @@ class InterestController extends Controller
      */
     public function store(Request $request)
     {
-        $interests = new Interest;
+        $emotions = new Emotion;
 
-		$interests->interest = $request->interest;
-		$interests->status = $request->status == null ? 0 : $request->status;
+        $emotions->emotion = $request->emotion;
 
-        $interests->save();
+        $emotions->save();
 
         return response()->json([
-            "status"=>200,
-            "message"=>"Registro creado correctamente.",
-            "success"=>true,
+            "status" => 200,
+            "message" => "Registro creado correctamente.",
+            "success" => true,
         ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Interest  interests
+     * @param  \App\Models\Emotion  emotions
      * @return \Illuminate\Http\Response
      */
-    public function show(Interest $interests)
+    public function show(Emotion $emotions)
     {
         //
     }
@@ -81,30 +80,29 @@ class InterestController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Interest  $interests
+     * @param  \App\Models\Emotion  $emotions
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
     {
         $data = Encrypt::decryptArray($request->all(), 'id');
 
-        $interests = Interest::where('id', $data['id'])->first();
-		$interests->interest = $request->interest;
-		$interests->status = $request->status == null ? 0 : $request->status;
+        $emotions = Emotion::where('id', $data['id'])->first();
+        $emotions->emotion = $request->emotion;
 
-        $interests->save();
+        $emotions->save();
 
         return response()->json([
-            "status"=>200,
-            "message"=>"Registro modificado correctamente.",
-            "success"=>true,
+            "status" => 200,
+            "message" => "Registro modificado correctamente.",
+            "success" => true,
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Interest  $interests
+     * @param  \App\Models\Emotion  $emotions
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
@@ -115,24 +113,24 @@ class InterestController extends Controller
             foreach ($data as $item) {
                 $item = json_decode($item);
 
-                Interest::where('id', $id)->delete();
+                Emotion::where('id', $id)->delete();
             }
 
             return response()->json([
-                "status"=>200,
-                "message"=>"Registro eliminado correctamente.",
-                "success"=>true,
+                "status" => 200,
+                "message" => "Registro eliminado correctamente.",
+                "success" => true,
             ]);
-        } 
+        }
 
         $id = Encrypt::decryptValue($request->id);
 
-        Interest::where('id', $id)->delete();
+        Emotion::where('id', $id)->delete();
 
         return response()->json([
-            "status"=>200,
-            "message"=>"Registro eliminado correctamente.",
-            "success"=>true,
+            "status" => 200,
+            "message" => "Registro eliminado correctamente.",
+            "success" => true,
         ]);
     }
 }

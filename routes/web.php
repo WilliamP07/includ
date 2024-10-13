@@ -10,6 +10,8 @@ use App\Http\Controllers\SponsorController;
 use App\Http\Controllers\ZoneController;
 use App\Http\Controllers\DirectoryController;
 use App\Http\Controllers\EmotionTipsController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\EmotionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,9 +29,11 @@ Route::get('/', fn() => view('auth/login'));
 Auth::routes(['verify' => true, 'remember_me' => false]);
 
 Route::group(['middleware' => ['auth']], function () {
+
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+
     Route::group(['middleware' => ['has.role:Administrador']], function () {
 
-        Route::get('/home', [HomeController::class, 'index'])->name('home');
 
         //Apis
         Route::resource('/api/web/interest', InterestController::class);
@@ -50,17 +54,32 @@ Route::group(['middleware' => ['auth']], function () {
         Route::resource('/api/web/emotionTip', EmotionTipsController::class);
         Route::delete('/api/web/emotionTip', [EmotionTipsController::class, 'destroy']);
 
-        Route::get('posts', [PostController::class, 'index']);
-        Route::post('post', [PostController::class, 'store']);
+        Route::resource('/api/web/department', DepartmentController::class);
+        Route::delete('/api/web/department', [DepartmentController::class, 'destroy']);
 
-        Route::post('comment', [PostController::class, 'comment']);
+        Route::resource('/api/web/emotion', EmotionController::class);
+        Route::delete('/api/web/emotion', [EmotionController::class, 'destroy']);
 
-        Route::get('user', [UserController::class, 'index']);
+        // Route::get('posts', [PostController::class, 'index']);
+        // Route::post('post', [PostController::class, 'store']);
 
-        Route::put('profile', [UserController::class, 'update']);
+        // Route::post('comment', [PostController::class, 'comment']);
+
+        // Route::get('user', [UserController::class, 'index']);
+
+        // Route::put('profile', [UserController::class, 'update']);
 
         // Views
-        Route::get('/users', fn() => view('user.index'));
         Route::get('/profile', fn() => view('profile.index'));
+        Route::get('/users', fn() => view('user.index'));
+        Route::get('/directories', fn() => view('directory.index'));
+        Route::get('/emotion-tips', fn() => view('emotion_tip.index'));
+        Route::get('/emotions', fn() => view('emotion.index'));
+        Route::get('/genders', fn() => view('gender.index'));
+        Route::get('/interests', fn() => view('interest.index'));
+        Route::get('/sponsors', fn() => view('sponsor.index'));
+        Route::get('/zones', fn() => view('zone.index'));
+        Route::get('/departments', fn() => view('department.index'));
+        Route::get('/municipalities', fn() => view('municipality.index'));
     });
 });
