@@ -14,34 +14,66 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
+    protected $table = 'users';
+
     public $incrementing = true;
+
+    protected $data = ['deleted_at'];
 
     protected $fillable = [
         'id',
         'name',
         'email',
-        'facebook',
-        'x',
-        'instagram',
-        'address',
-        'birth_date',
-        'about_me',
         'alias',
+        'birth_date',
+        'gender_id',
+        'department_id',
         'password',
         'email_verified_at',
-    ];
-
-    protected $hidden = [
-        'password',
+        'remember_token',
         'created_at',
         'updated_at',
-        'remember_token',
-        'email_verified_at',
+        'deleted_at',
     ];
 
-    protected $casts = [
-        'email_verified_at' => 'datetime',
+    public $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
+
+    // protected $casts = [
+    //     'email_verified_at' => 'datetime',
+    // ];
+
+    public $timestamps = true;
+
+    public static function allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage)
+    {
+        return User::select('users.*', 'genders.*', 'departments.*', 'users.id as id')
+            ->join('genders', 'users.gender_id', '=', 'genders.id', 'left outer')
+            ->join('departments', 'users.department_id', '=', 'departments.id', 'left outer')
+
+            ->where('users.email', 'like', $search)
+            ->orWhere('users.name', 'like', $search)
+
+            ->skip($skip)
+            ->take($itemsPerPage)
+            ->orderBy("users.$sortBy", $sort)
+            ->get();
+    }
+
+    public static function counterPagination($search)
+    {
+        return User::select('users.*', 'genders.*', 'departments.*', 'users.id as id')
+            ->join('genders', 'users.gender_id', '=', 'genders.id', 'left outer')
+            ->join('departments', 'users.department_id', '=', 'departments.id', 'left outer')
+
+            ->where('users.email', 'like', $search)
+            ->orWhere('users.name', 'like', $search)
+
+            ->count();
+    }
 
     public function sendEmailVerificationNotification()
     {

@@ -34,8 +34,10 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::group(['middleware' => ['has.role:Administrador']], function () {
 
-
         //Apis
+        Route::resource('/api/web/user', UserController::class);
+        Route::delete('/api/web/user', [UserController::class, 'destroy']);
+
         Route::resource('/api/web/interest', InterestController::class);
         Route::delete('/api/web/interest', [InterestController::class, 'destroy']);
 

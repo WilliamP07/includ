@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="my-auto mx-auto text-center">
-      <img :src="imagePreview" alt="" width="200px" height="auto" />
+    <div class="my-auto mt-2">
+      <img :src="imagePreview" alt="" width="100px" height="auto" />
     </div>
-    <a href="#" @click="clickInputFile()" class="button-center">
+    <a href="#" @click="clickInputFile()" class="button-center pt-2">
       <i class="material-icons icon-center" style="color: #be0216">image</i> Seleccionar imagen</a
     >
     <input

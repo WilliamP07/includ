@@ -6,6 +6,7 @@ use App\Models\Sponsor;
 
 use Illuminate\Http\Request;
 use Encrypt;
+use Str;
 
 class SponsorController extends Controller
 {
@@ -31,6 +32,9 @@ class SponsorController extends Controller
         $search = (isset($request->search)) ? "%$request->search%" : '%%';
 
         $sponsors = Sponsor::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
+        // foreach ($sponsors as $value) {
+        //     $value['sponsor_image'] = getenv('STORAGE_URL') . $value['sponsor_image'];
+        // }
         $sponsors = Encrypt::encryptObject($sponsors, "id");
 
         $total = Sponsor::counterPagination($search);
@@ -54,8 +58,13 @@ class SponsorController extends Controller
     {
         $sponsors = new Sponsor;
 
+        if (FileController::verifyTypeImage($request->sponsor_image)) {
+
+            $sponsorImage = FileController::base64ToFile($request->sponsor_image, date("Y-m-d") . '-' . Str::random(4), 'sponsors');
+        }
+
         $sponsors->sponsor_name = $request->sponsor_name;
-        $sponsors->sponsor_image = $request->sponsor_image;
+        $sponsors->sponsor_image = $sponsorImage;
         $sponsors->sponsor_description = $request->sponsor_description;
         $sponsors->status = $request->status == null ? 0 : $request->status;
 
@@ -90,9 +99,14 @@ class SponsorController extends Controller
     {
         $data = Encrypt::decryptArray($request->all(), 'id');
 
+        if (FileController::verifyTypeImage($request->sponsor_image)) {
+
+            $sponsorImage = FileController::base64ToFile($request->sponsor_image, date("Y-m-d") . '-' . Str::random(4), 'sponsors');
+        }
+
         $sponsors = Sponsor::where('id', $data['id'])->first();
         $sponsors->sponsor_name = $request->sponsor_name;
-        $sponsors->sponsor_image = $request->sponsor_image;
+        $sponsors->sponsor_image = $sponsorImage;
         $sponsors->sponsor_description = $request->sponsor_description;
         $sponsors->status = $request->status == null ? 0 : $request->status;
 

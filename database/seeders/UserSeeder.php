@@ -23,6 +23,10 @@ class UserSeeder extends Seeder
         $user = User::create([
             'id' => 1,
             'name' => 'Usuario',
+            'alias' => 'Fulanito',
+            'gender_id' => 1,
+            'department_id' => 1,
+            'birth_date' => '2000-10-01',
             'email' => 'usuario@gmail.com',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
@@ -32,6 +36,10 @@ class UserSeeder extends Seeder
         $authorizer = User::create([
             'id' => 2,
             'name' => 'Autorizador',
+            'alias' => 'Fulanito',
+            'gender_id' => 3,
+            'department_id' => 3,
+            'birth_date' => '2000-10-01',
             'email' => 'autorizador@gmail.com',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
@@ -41,6 +49,10 @@ class UserSeeder extends Seeder
         $admin = User::create([
             'id' => 3,
             'name' => 'Administrador',
+            'alias' => 'Fulanito',
+            'gender_id' => 2,
+            'department_id' => 6,
+            'birth_date' => '2000-10-01',
             'email' => 'admin@gmail.com',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),

@@ -64,9 +64,9 @@
                                 <li><a class="text-white fw-bold" href="{{ url('/departments') }}">Departamentos</a></li>
                                 <li><a class="text-white fw-bold" href="{{ url('/emotion-tips') }}">Consejos</a></li>
                                 <li><a class="text-white fw-bold" href="{{ url('/emotions') }}">Emociones</a></li>
+                                <li><a class="text-white fw-bold" href="{{ url('/users') }}">Usuarios</a></li>
                                 <li><a class="text-white fw-bold" href="{{ url('/posts') }}">Publicaciones</a></li>
-                                <li><a class="text-white fw-bold" href="{{ url('/users') }}">Juegos</a></li>
-                                <li><a class="text-white fw-bold" href="{{ url('/games') }}">Usuarios</a></li>
+                                <li><a class="text-white fw-bold" href="{{ url('/games') }}">Juegos</a></li>
 
                             </ul>
                         </li>

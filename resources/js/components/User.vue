@@ -17,14 +17,14 @@
           <h2>{{ title }}</h2>
         </v-col>
         <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end">
-          <v-btn
+          <!-- <v-btn
             rounded
             @click="addRecord()"
             class="mb-2 btn-normal no-uppercase"
             title="Agregar"
           >
             Agregar
-          </v-btn>
+          </v-btn> -->
         </v-col>
         <v-col cols="12" sm="12" md="12" lg="4" xl="4" class="pl-0 pb-0 pr-0">
           <v-text-field
@@ -48,17 +48,6 @@
         sort-by="id"
         :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
       >
-        <template v-slot:item.sponsor_image="{ item }">
-          <img :src="item.sponsor_image" alt="" width="30px" height="auto" />
-        </template>
-        <template v-slot:item.status="{ item }">
-          <v-chip
-            style="color: white"
-            :color="item.status == 1 ? '#FF6F15' : '#EBCDDB'"
-          >
-            {{ item.status == 1 ? "Público" : "Privado" }}
-          </v-chip>
-        </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon small class="mr-2" @click="editItem(item)">
             mdi-pencil
@@ -85,59 +74,104 @@
           <v-container>
             <!-- Form -->
             <v-row class="pt-3">
-              <!-- sponsor_name -->
+              <!-- name -->
               <v-col cols="12" sm="12" md="12">
                 <base-input
-                  label="Patrocinador"
-                  v-model="$v.editedItem.sponsor_name.$model"
-                  :validation="$v.editedItem.sponsor_name"
+                  label="Nombre"
+                  v-model="$v.editedItem.name.$model"
+                  :validation="$v.editedItem.name"
                   validationTextType="none"
                   :validationsInput="{
                     required: true,
                     minLength: true,
                   }"
+                  :disabled="true"
                 />
               </v-col>
-              <!-- sponsor_name -->
+              <!-- name -->
 
-              <!-- sponsor_description -->
-              <v-col cols="12" sm="12" md="12">
+              <!-- email -->
+              <v-col cols="12" sm="12" md="6">
                 <base-input
-                  label="Descripción"
-                  v-model="$v.editedItem.sponsor_description.$model"
-                  :validation="$v.editedItem.sponsor_description"
+                  label="Correo electrónico"
+                  v-model="$v.editedItem.email.$model"
+                  :validation="$v.editedItem.email"
                   validationTextType="none"
                   :validationsInput="{
-                    required: false,
+                    required: true,
+                    minLength: true,
                   }"
+                  :disabled="true"
                 />
               </v-col>
-              <!-- sponsor_description -->
-              <!-- sponsor_image -->
-              <v-col cols="12" sm="12" md="6" class="">
-                <h6 class="mb-0 fw-bold text-dark">
-                  Adjuntar logo del patrocinador.
-                </h6>
-                <span class="">(Máximo 5MB | png, jpg, jpeg)</span>
-                <input-image
-                  class=""
-                  v-model="$v.editedItem.sponsor_image.$model"
-                  :validation="$v.editedItem.sponsor_image"
-                  :image="editedItem.sponsor_image"
-                  @update-image="editedItem.sponsor_image = $event"
-                />
-              </v-col>
-              <!-- sponsor_image -->
+              <!-- email -->
 
-              <!-- status -->
+              <!-- alias -->
               <v-col cols="12" sm="12" md="6">
-                <v-checkbox
-                  v-model="$v.editedItem.status.$model"
-                  label="¿Publicar?"
-                  style="margin-top: 0"
-                ></v-checkbox>
+                <base-input
+                  label="Pronombre"
+                  v-model="$v.editedItem.alias.$model"
+                  :validation="$v.editedItem.alias"
+                  validationTextType="none"
+                  :validationsInput="{
+                    required: true,
+                    minLength: true,
+                  }"
+                  :disabled="true"
+                />
               </v-col>
-              <!-- status -->
+              <!-- alias -->
+
+              <!-- birth_date -->
+              <v-col cols="12" sm="12" md="6">
+                <base-input
+                  label="Fecha de nacimiento"
+                  v-model="$v.editedItem.birth_date.$model"
+                  :validation="$v.editedItem.birth_date"
+                  validationTextType="none"
+                  :validationsInput="{
+                    required: true,
+                    minLength: true,
+                  }"
+                  type="date"
+                  :disabled="true"
+                />
+              </v-col>
+              <!-- birth_date -->
+
+              <!-- gender -->
+              <v-col cols="12" sm="12" md="6">
+                <base-select-search
+                  label="Género"
+                  v-model.trim="$v.editedItem.gender.$model"
+                  :items="genders"
+                  item="gender"
+                  :validation="$v.editedItem.gender"
+                  :validationsInput="{
+                    required: true,
+                    minLength: true,
+                  }"
+                  :disabled="true"
+                />
+              </v-col>
+              <!-- gender -->
+
+              <!-- department_name -->
+              <v-col cols="12" sm="12" md="6">
+                <base-select-search
+                  label="Departmento"
+                  v-model.trim="$v.editedItem.department_name.$model"
+                  :items="departments"
+                  item="department_name"
+                  :validation="$v.editedItem.department_name"
+                  :validationsInput="{
+                    required: true,
+                    minLength: true,
+                  }"
+                  :disabled="true"
+                />
+              </v-col>
+              <!-- department_name -->
             </v-row>
             <!-- Form -->
             <v-row>
@@ -195,8 +229,9 @@
 </template>
 
 <script>
-import sponsorApi from "../apis/sponsorApi";
-
+import userApi from "../apis/userApi";
+import genderApi from "../apis/genderApi";
+import departmentApi from "../apis/departmentApi";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 
 export default {
@@ -207,29 +242,35 @@ export default {
       dialog: false,
       dialogDelete: false,
       headers: [
-        { text: "PATROCINADOR", value: "sponsor_name" },
-        { text: "IMAGEN", value: "sponsor_image" },
-        { text: "DESCRIPCIÓN", value: "sponsor_description" },
-        { text: "ESTADO", value: "status" },
+        { text: "NOMBRE", value: "name" },
+        { text: "CORREO ELECTRÓNICO", value: "email" },
+        { text: "PRONOMBRE", value: "alias" },
+        { text: "FECHA DE NACIMIENTO", value: "birth_date" },
+        { text: "DEPARTAMENTO", value: "department_name" },
+        { text: "GÉNERO", value: "gender" },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
       records: [],
       recordsFiltered: [],
       editedIndex: -1,
-      title: "Patrocinadores",
+      title: "Usuarios",
       totalItems: 0,
       options: {},
       editedItem: {
-        sponsor_name: "",
-        sponsor_image: "",
-        sponsor_description: "",
-        status: "",
+        name: "",
+        email: "",
+        alias: "",
+        birth_date: "",
+        gender: "",
+        department_name: "",
       },
       defaultItem: {
-        sponsor_name: "",
-        sponsor_image: "",
-        sponsor_description: "",
-        status: "",
+        name: "",
+        email: "",
+        alias: "",
+        birth_date: "",
+        gender: "",
+        department_name: "",
       },
       selectedTab: 0,
       loading: false,
@@ -239,6 +280,8 @@ export default {
       showAlert: false,
       redirectSessionFinished: false,
       alertTimeOut: 0,
+      genders: [],
+      departments: [],
     };
   },
 
@@ -257,21 +300,29 @@ export default {
   // Validations
   validations: {
     editedItem: {
-      sponsor_name: {
+      name: {
         required,
         minLength: minLength(1),
       },
-      sponsor_image: {
+      email: {
         required,
-        // minLength: minLength(1),
-      },
-      sponsor_description: {
-        // required,
         minLength: minLength(1),
       },
-      status: {
-        // required,
-        // minLength: minLength(1),
+      alias: {
+        required,
+        minLength: minLength(1),
+      },
+      birth_date: {
+        required,
+        minLength: minLength(1),
+      },
+      gender: {
+        required,
+        minLength: minLength(1),
+      },
+      department_name: {
+        required,
+        minLength: minLength(1),
       },
     },
   },
@@ -293,7 +344,15 @@ export default {
       this.records = [];
       this.recordsFiltered = [];
 
-      let requests = [this.getDataFromApi()];
+      let requests = [
+        this.getDataFromApi(),
+        genderApi.get(null, {
+          params: { itemsPerPage: -1 },
+        }),
+        departmentApi.get(null, {
+          params: { itemsPerPage: -1 },
+        }),
+      ];
 
       const responses = await Promise.all(requests).catch((error) => {
         this.updateAlert(true, "No fue posible obtener el registro.", "fail");
@@ -305,6 +364,8 @@ export default {
       });
 
       if (responses) {
+        this.genders = responses[1].data.records;
+        this.departments = responses[2].data.departments;
       }
 
       this.loading = false;
@@ -338,7 +399,7 @@ export default {
           this.editedItem
         );
 
-        const { data } = await sponsorApi
+        const { data } = await userApi
           .put(`/${edited.id}`, edited)
           .catch((error) => {
             this.updateAlert(
@@ -358,7 +419,7 @@ export default {
         }
       } else {
         //Creating user
-        const { data } = await sponsorApi
+        const { data } = await userApi
           .post(null, this.editedItem)
           .catch((error) => {
             this.updateAlert(true, "No fue posible crear el registro.", "fail");
@@ -399,7 +460,7 @@ export default {
     },
 
     async deleteItemConfirm() {
-      const { data } = await sponsorApi
+      const { data } = await userApi
         .delete(null, {
           params: {
             selected: this.selected,
@@ -436,7 +497,7 @@ export default {
       //debounce
       clearTimeout(this.debounce);
       this.debounce = setTimeout(async () => {
-        const { data } = await sponsorApi
+        const { data } = await userApi
           .get(null, {
             params: this.options,
           })

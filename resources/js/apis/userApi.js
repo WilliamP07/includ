@@ -1,7 +1,11 @@
 import axios from "axios";
+// import { interceptorRequest, interceptorReponse } from "./interceptor";
 
-const culturaHouseApi = axios.create({
+const userApi = axios.create({
     baseURL: "/api/web/user",
 });
 
-export default culturaHouseApi;
+// userApi.interceptors.request.use(interceptorRequest);
+// userApi.interceptors.response.reject(interceptorReponse);
+
+export default userApi;

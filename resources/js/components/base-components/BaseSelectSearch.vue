@@ -7,6 +7,7 @@
       :items="items"
       :item-text="item"
       :readonly="readonly"
+      :disabled="disabled"
       v-model="validation.$model"
       class="p-0 mt-0"
       @change="$emit('change', validation.$model)"
@@ -52,6 +53,10 @@ export default {
       default: "name",
     },
     readonly: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
       type: Boolean,
       default: false,
     },
