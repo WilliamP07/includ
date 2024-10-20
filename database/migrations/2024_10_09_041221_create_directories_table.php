@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string("phone");
             $table->text("address");
             $table->foreignId('zone_id')->constrained('zones');
-            $table->foreignId('department_id')->constrained('departments');
+            // $table->foreignId('department_id')->constrained('departments');
             $table->tinyInteger("status")->comment("1 = public, 0 = private")->default(0);
             $table->softDeletes();
             $table->timestamps();
