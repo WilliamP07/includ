@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Directory;
 use App\Models\Zone;
+use App\Models\DirectoryServices;
+use App\Models\SocialNetworks;
 
 use Illuminate\Http\Request;
 use Encrypt;
@@ -32,8 +34,17 @@ class DirectoryController extends Controller
         $search = (isset($request->search)) ? "%$request->search%" : '%%';
 
         $directories = Directory::allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage);
-        $directories = Encrypt::encryptObject($directories, "id");
 
+        foreach ($directories as $key => $value) {
+            $arrSocialNetworks = SocialNetworks::where('directory_id', $value['id'])->get();
+            $value['socialNetworks'] = $arrSocialNetworks;
+            $arrDirectoryServices = DirectoryServices::where('directory_id', $value['id'])->get();
+            $value['directoryServices'] = $arrDirectoryServices;
+
+            $directories[$key] = $value;
+        }
+
+        $directories = Encrypt::encryptObject($directories, "id");
         $total = Directory::counterPagination($search);
 
         return response()->json([
@@ -53,15 +64,21 @@ class DirectoryController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->name);
         $directories = new Directory;
-
-        $directories->name = $request->name;
-        $directories->phone = $request->phone;
-        $directories->address = $request->address;
-        $directories->zone_id = Zone::where('zone_name', $request->zone_name)->first()->id;
-        $directories->status = $request->status == null ? 0 : $request->status;
-
+        
+        $directories->name = $request['params']['data']['name'];
+        $directories->phone = $request['params']['data']['phone'];
+        $directories->address = $request['params']['data']['address'];
+        $directories->zone_id = Zone::where('zone_name', $request['params']['data']['zone_name'])->first()->id;
+        $directories->status = $request['params']['data']['status'] == null ? 0 : $request['params']['data']['status'];
+        
         $directories->save();
+
+
+        DirectoryServicesController::store($request['params']['directoryServices'], $directories->id);
+
+        SocialNetworksController::store($request['params']['socialNetworks'], $directories->id);
 
         return response()->json([
             "status" => 200,

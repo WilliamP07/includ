@@ -15,6 +15,7 @@
       :type="type"
       :disabled="disabled"
       :readonly="readonly"
+      :hide-details="hideDetails"
       @input="updateValue"
       v-mask="mask"
       @keyup="validateText()"
@@ -208,6 +209,10 @@ export default {
       default: false,
     },
     disabled: {
+      type: Boolean,
+      default: false,
+    },
+    hideDetails: {
       type: Boolean,
       default: false,
     },

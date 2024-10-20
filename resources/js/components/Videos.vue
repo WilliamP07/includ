@@ -11,7 +11,7 @@
       @show-alert="updateAlert($event)"
       class="mb-2"
     />
-    <v-card class="p-3">
+    <v-card class="p-3" style="border-radius: 16px">
       <v-row class="p-3">
         <v-col cols="12" sm="12" md="4" lg="4" xl="4">
           <h2>{{ title }}</h2>
@@ -49,6 +49,21 @@
         :server-items-length="total"
         :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
       >
+        <template v-slot:item.status="{ item }">
+          <v-chip
+            style="color: white"
+            :color="item.status == 1 ? '#FF6F15' : '#EBCDDB'"
+          >
+            {{ item.status == 1 ? "Público" : "Privado" }}
+          </v-chip>
+        </template>
+        <template v-slot:item.link="{ item }">
+          <a :href="item.link" target="_blank" style="cursor: pointer">
+            <v-chip style="color: white" color="#ff0033">
+              <v-icon class="me-1">mdi-youtube</v-icon> Ver en YouTube
+            </v-chip>
+          </a>
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon small class="mr-2" @click="editItem(item)">
             mdi-pencil
@@ -75,20 +90,70 @@
           <v-container>
             <!-- Form -->
             <v-row class="pt-3">
-              <!-- gender -->
+              <!-- video_title -->
               <v-col cols="12" sm="12" md="12">
                 <base-input
-                  label="Género"
-                  v-model="$v.editedItem.gender.$model"
-                  :validation="$v.editedItem.gender"
+                  label="Título"
+                  v-model="$v.editedItem.video_title.$model"
+                  :validation="$v.editedItem.video_title"
                   validationTextType="none"
                   :validationsInput="{
                     required: true,
-                    minLength: true,
                   }"
                 />
               </v-col>
-              <!-- gender -->
+              <!-- video_title -->
+
+              <!-- video_description -->
+              <v-col cols="12" sm="12" md="12">
+                <base-text-area
+                  label="Descripción"
+                  v-model="$v.editedItem.video_description.$model"
+                  :validation="$v.editedItem.video_description"
+                  validationTextType="none"
+                  :rows="6"
+                />
+              </v-col>
+              <!-- video_description -->
+
+              <!-- link -->
+              <v-col cols="12" sm="12" md="12">
+                <base-input
+                  label="Enlace de YouTube"
+                  v-model="$v.editedItem.link.$model"
+                  :validation="$v.editedItem.link"
+                  validationTextType="none"
+                  :validationsInput="{
+                    required: true,
+                  }"
+                />
+              </v-col>
+              <!-- link -->
+
+              <!-- show_in -->
+              <v-col cols="12" sm="12" md="6">
+                <base-select-search
+                  label="¿Mostrar en?"
+                  v-model.trim="$v.editedItem.show_in.$model"
+                  :items="sections"
+                  item="show_in"
+                  :validation="$v.editedItem.show_in"
+                  :validationsInput="{
+                    required: true,
+                  }"
+                />
+              </v-col>
+              <!-- show_in -->
+
+              <!-- status -->
+              <v-col cols="12" sm="12" md="6">
+                <v-checkbox
+                  v-model="$v.editedItem.status.$model"
+                  label="¿Publicar?"
+                  style="margin-top: 0"
+                ></v-checkbox>
+              </v-col>
+              <!-- status -->
             </v-row>
             <!-- Form -->
             <v-row>
@@ -146,7 +211,7 @@
 </template>
 
 <script>
-import genderApi from "../apis/genderApi";
+import videoApi from "../apis/videoApi";
 
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 
@@ -158,21 +223,34 @@ export default {
       dialog: false,
       dialogDelete: false,
       headers: [
-        { text: "GÉNERO", value: "gender", sortable: false },
+        { text: "TÍTULO", value: "video_title", sortable: false },
+        { text: "DESCRIPCIÓN", value: "video_description", sortable: false },
+        { text: "ENLACE", value: "link", sortable: false },
+        { text: "MOSTRAR EN", value: "show_in", sortable: false },
+        { text: "ESTADO", value: "status", sortable: false },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
       records: [],
       recordsFiltered: [],
+      sections: [{ show_in: "Home" }, { show_in: "Videos" }],
       editedIndex: -1,
-      title: "Género",
+      title: "Videos",
       totalItems: 0,
       total: 0,
       options: {},
       editedItem: {
-        gender: "",
+        video_title: "",
+        video_description: "",
+        link: "",
+        show_in: "",
+        status: "",
       },
       defaultItem: {
-        gender: "",
+        video_title: "",
+        video_description: "",
+        link: "",
+        show_in: "",
+        status: "",
       },
       selectedTab: 0,
       loading: false,
@@ -200,9 +278,20 @@ export default {
   // Validations
   validations: {
     editedItem: {
-      gender: {
+      video_title: {
         required,
-        minLength: minLength(1),
+      },
+      video_description: {
+        // required,
+      },
+      link: {
+        required,
+      },
+      show_in: {
+        required,
+      },
+      status: {
+        // required,
       },
     },
   },
@@ -212,7 +301,6 @@ export default {
       return this.editedIndex === -1 ? "Nuevo registro" : "Editar registro";
     },
   },
-
 
   created() {
     this.initialize();
@@ -270,7 +358,7 @@ export default {
           this.editedItem
         );
 
-        const { data } = await genderApi
+        const { data } = await videoApi
           .put(`/${edited.id}`, edited)
           .catch((error) => {
             this.updateAlert(
@@ -290,7 +378,7 @@ export default {
         }
       } else {
         //Creating user
-        const { data } = await genderApi
+        const { data } = await videoApi
           .post(null, this.editedItem)
           .catch((error) => {
             this.updateAlert(true, "No fue posible crear el registro.", "fail");
@@ -331,7 +419,7 @@ export default {
     },
 
     async deleteItemConfirm() {
-      const { data } = await genderApi
+      const { data } = await videoApi
         .delete(null, {
           params: {
             selected: this.selected,
@@ -368,7 +456,7 @@ export default {
       //debounce
       clearTimeout(this.debounce);
       this.debounce = setTimeout(async () => {
-        const { data } = await genderApi
+        const { data } = await videoApi
           .get(null, {
             params: this.options,
           })

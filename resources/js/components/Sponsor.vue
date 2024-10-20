@@ -46,10 +46,11 @@
         :loading="loading"
         item-key="id"
         sort-by="id"
+        :server-items-length="total"
         :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
       >
         <template v-slot:item.sponsor_image="{ item }">
-          <img :src="item.sponsor_image" alt="" width="30px" height="auto" />
+          <img :src="item.sponsor_image" alt="" width="40px" height="auto" />
         </template>
         <template v-slot:item.status="{ item }">
           <v-chip
@@ -207,10 +208,10 @@ export default {
       dialog: false,
       dialogDelete: false,
       headers: [
-        { text: "PATROCINADOR", value: "sponsor_name" },
-        { text: "IMAGEN", value: "sponsor_image" },
-        { text: "DESCRIPCIÓN", value: "sponsor_description" },
-        { text: "ESTADO", value: "status" },
+        { text: "PATROCINADOR", value: "sponsor_name", sortable: false },
+        { text: "IMAGEN", value: "sponsor_image", sortable: false },
+        { text: "DESCRIPCIÓN", value: "sponsor_description", sortable: false },
+        { text: "ESTADO", value: "status", sortable: false },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
       records: [],
@@ -218,6 +219,7 @@ export default {
       editedIndex: -1,
       title: "Patrocinadores",
       totalItems: 0,
+      total: 0,
       options: {},
       editedItem: {
         sponsor_name: "",

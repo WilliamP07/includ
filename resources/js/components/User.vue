@@ -46,6 +46,7 @@
         :loading="loading"
         item-key="id"
         sort-by="id"
+        :server-items-length="total"
         :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
       >
         <template v-slot:[`item.actions`]="{ item }">
@@ -255,6 +256,7 @@ export default {
       editedIndex: -1,
       title: "Usuarios",
       totalItems: 0,
+      total: 0,
       options: {},
       editedItem: {
         name: "",

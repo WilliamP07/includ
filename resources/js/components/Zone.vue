@@ -157,7 +157,7 @@ export default {
       dialog: false,
       dialogDelete: false,
       headers: [
-        { text: "ZONA", value: "zone_name" },
+        { text: "ZONA", value: "zone_name", sortable: false },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
       records: [],
@@ -181,18 +181,6 @@ export default {
       redirectSessionFinished: false,
       alertTimeOut: 0,
     };
-  },
-
-  watch: {
-    options: {
-      handler() {
-        this.getDataFromApi();
-      },
-      deep: true,
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    },
   },
 
   // Validations
