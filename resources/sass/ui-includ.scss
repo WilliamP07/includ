@@ -74,6 +74,9 @@ footer {
 .orange-text{
     color: $color-secondary;
 }
+.hover-link:hover{
+    cursor: pointer;
+}
 
 /**
  * Buttons

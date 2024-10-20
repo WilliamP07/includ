@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
-class Directory extends Model
+class Video extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'directories';
+    protected $table = 'videos';
 
     public $incrementing = true;
 
@@ -18,11 +18,10 @@ class Directory extends Model
 
     protected $fillable = [
         'id',
-        'name',
-        'phone',
-        'address',
-        'zone_id',
-        'department_id',
+        'video_title',
+        'video_description',
+        'show_in',
+        'link',
         'status',
         'deleted_at',
         'created_at',
@@ -39,23 +38,21 @@ class Directory extends Model
 
     public static function allDataSearched($search, $sortBy, $sort, $skip, $itemsPerPage)
     {
-        return Directory::select('directories.*', 'zones.*', 'directories.id as id')
-            ->join('zones', 'directories.zone_id', '=', 'zones.id')
+        return Video::select('videos.*', 'videos.id as id')
 
-            ->where('directories.name', 'like', $search)
+            ->where('videos.link', 'like', $search)
 
             ->skip($skip)
             ->take($itemsPerPage)
-            ->orderBy("directories.$sortBy", $sort)
+            ->orderBy("videos.$sortBy", $sort)
             ->get();
     }
 
     public static function counterPagination($search)
     {
-        return Directory::select('directories.*', 'zones.*', 'directories.id as id')
-            ->join('zones', 'directories.zone_id', '=', 'zones.id')
+        return Video::select('videos.*', 'videos.id as id')
 
-            ->where('directories.name', 'like', $search)
+            ->where('videos.link', 'like', $search)
 
             ->count();
     }

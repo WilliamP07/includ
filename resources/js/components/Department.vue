@@ -46,6 +46,7 @@
         :loading="loading"
         item-key="id"
         sort-by="id"
+        :server-items-length="total"
         :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
       >
         <template v-slot:[`item.actions`]="{ item }">
@@ -157,7 +158,7 @@ export default {
       dialog: false,
       dialogDelete: false,
       headers: [
-        { text: "DEPARTAMENTO", value: "department_name" },
+        { text: "DEPARTAMENTO", value: "department_name", sortable: false },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
       records: [],
@@ -165,6 +166,7 @@ export default {
       editedIndex: -1,
       title: "Departamentos",
       totalItems: 0,
+      total: 0,
       options: {},
       editedItem: {
         department_name: "",

@@ -13,13 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('directories', function (Blueprint $table) {
+        Schema::create('videos', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->string("phone");
-            $table->text("address");
-            $table->foreignId('zone_id')->constrained('zones');
-            $table->foreignId('department_id')->constrained('departments');
+            $table->string("video_title");
+            $table->text("video_description")->nullable();
+            $table->text("link");
+            $table->string("show_in");
             $table->tinyInteger("status")->comment("1 = public, 0 = private")->default(0);
             $table->softDeletes();
             $table->timestamps();
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('directories');
+        Schema::dropIfExists('videos');
     }
 };

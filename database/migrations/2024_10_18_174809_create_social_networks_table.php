@@ -13,14 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('directories', function (Blueprint $table) {
+        Schema::create('social_networks', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->string("phone");
-            $table->text("address");
-            $table->foreignId('zone_id')->constrained('zones');
-            $table->foreignId('department_id')->constrained('departments');
-            $table->tinyInteger("status")->comment("1 = public, 0 = private")->default(0);
+            $table->text("company")->nullable();
+            $table->text("facebook")->nullable();
+            $table->text("youtube")->nullable();
+            $table->text("instagram")->nullable();
+            $table->text("tiktok")->nullable();
+            $table->text("x")->nullable();
+            $table->foreignId('directory_id')->constrained('directories');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -33,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('directories');
+        Schema::dropIfExists('social_networks');
     }
 };

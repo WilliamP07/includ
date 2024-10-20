@@ -46,6 +46,7 @@
         :loading="loading"
         item-key="id"
         sort-by="id"
+        :server-items-length="total"
         :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
       >
         <template v-slot:item.status="{ item }">
@@ -53,7 +54,7 @@
             style="color: white"
             :color="item.status == 1 ? '#FF6F15' : '#EBCDDB'"
           >
-            {{ item.status == 1 ? 'Público' : 'Privado'}}
+            {{ item.status == 1 ? "Público" : "Privado" }}
           </v-chip>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
@@ -70,7 +71,7 @@
       </v-data-table>
     </v-card>
 
-    <v-dialog v-model="dialog" max-width="700" persistent>
+    <v-dialog v-model="dialog" max-width="800" persistent>
       <v-card class="flexcard" height="100%">
         <v-card-title>
           <h1 class="mx-auto pt-3 mb-3 text-center black-secondary">
@@ -93,6 +94,7 @@
                     required: true,
                     minLength: true,
                   }"
+                  :hide-details="true"
                 />
               </v-col>
               <!-- name -->
@@ -109,6 +111,7 @@
                     minLength: true,
                   }"
                   v-mask="'####-####'"
+                  :hide-details="true"
                 />
               </v-col>
               <!-- phone -->
@@ -145,24 +148,128 @@
               <!-- address -->
 
               <!-- status -->
-              <v-col cols="12" sm="12" md="6">
+              <v-col cols="12" sm="12" md="12">
                 <v-checkbox
                   v-model="$v.editedItem.status.$model"
                   label="¿Publicar?"
                   style="margin-top: 0"
                 ></v-checkbox>
-                <!-- <base-input
-                  label="Estado"
-                  v-model="$v.editedItem.status.$model"
-                  :validation="$v.editedItem.status"
-                  validationTextType="none"
-                  :validationsInput="{
-                    required: true,
-                    minLength: true,
-                  }"
-                /> -->
               </v-col>
               <!-- status -->
+
+              <v-col cols="12" sm="12" md="12">
+                <base-input
+                  label="Enlace de Facebook"
+                  v-model="$v.socialNetworks.facebook.$model"
+                  :validation="$v.socialNetworks.facebook"
+                  validationTextType="none"
+                  :hide-details="true"
+                />
+              </v-col>
+              <v-col cols="12" sm="12" md="12">
+                <base-input
+                  label="Enlace de Instagram"
+                  v-model="$v.socialNetworks.instagram.$model"
+                  :validation="$v.socialNetworks.instagram"
+                  validationTextType="none"
+                  :hide-details="true"
+                />
+              </v-col>
+              <v-col cols="12" sm="12" md="12">
+                <base-input
+                  label="Enlace de TikTok"
+                  v-model="$v.socialNetworks.tiktok.$model"
+                  :validation="$v.socialNetworks.tiktok"
+                  validationTextType="none"
+                  :hide-details="true"
+                />
+              </v-col>
+              <v-col cols="12" sm="12" md="12">
+                <base-input
+                  label="Enlace de X"
+                  v-model="$v.socialNetworks.x.$model"
+                  :validation="$v.socialNetworks.x"
+                  validationTextType="none"
+                  :hide-details="true"
+                />
+              </v-col>
+              <v-col cols="12" sm="12" md="12">
+                <base-input
+                  label="Enlace de YouTube"
+                  v-model="$v.socialNetworks.youtube.$model"
+                  :validation="$v.socialNetworks.youtube"
+                  validationTextType="none"
+                  :hide-details="true"
+                />
+              </v-col>
+              <v-col cols="12" sm="12" md="12">
+                <base-input
+                  label="Enlace de sitio web"
+                  v-model="$v.socialNetworks.company.$model"
+                  :validation="$v.socialNetworks.company"
+                  validationTextType="none"
+                  :hide-details="true"
+                />
+              </v-col>
+              <v-col cols="12" sm="12" md="12">
+                <v-btn
+                  color="btn-normal"
+                  rounded
+                  @click="dialogDirectoryServices = true"
+                >
+                  Agregar servicios
+                </v-btn>
+              </v-col>
+              <v-col cols="12" sm="12" md="12" class="">
+                <div class="table-responsive-md">
+                  <table class="table table-responsive-md table-hover">
+                    <thead>
+                      <th>#</th>
+                      <th>Servicio</th>
+                      <th class="text-center">Acciones</th>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="(
+                          service, index
+                        ) in editedItem.directoryServicesArr"
+                        :key="index"
+                      >
+                        <td>
+                          {{ index + 1 }}
+                        </td>
+                        <td>
+                          {{ service.service }}
+                        </td>
+                        <td class="text-center">
+                          <a
+                            @click="deleteServices(index)"
+                            class="p-1 mr-1 text-center"
+                          >
+                            <v-tooltip left>
+                              <template v-slot:activator="{ on, attrs }">
+                                <span
+                                  class="material-icons hover-link"
+                                  v-bind="attrs"
+                                  v-on="on"
+                                >
+                                  delete
+                                </span>
+                              </template>
+                              <span>Eliminar</span>
+                            </v-tooltip>
+                          </a>
+                        </td>
+                      </tr>
+                      <tr v-if="editedItem.directoryServicesArr.length == 0">
+                        <td colspan="5" class="text-center pt-3">
+                          No se ha registrado ningún servicio
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </v-col>
             </v-row>
             <!-- Form -->
             <v-row>
@@ -170,6 +277,7 @@
                 <v-btn
                   color="btn-normal no-uppercase mt-3"
                   rounded
+                  :loading="loading"
                   @click="save"
                 >
                   Guardar
@@ -188,6 +296,7 @@
       </v-card>
     </v-dialog>
 
+    <!-- dialog delete -->
     <v-dialog v-model="dialogDelete" max-width="400px">
       <v-card class="h-100">
         <v-container>
@@ -216,6 +325,50 @@
         </v-container>
       </v-card>
     </v-dialog>
+    <!-- dialog delete -->
+
+    <!-- dialog directory services -->
+    <v-dialog v-model="dialogDirectoryServices" max-width="600px" persistent>
+      <v-card class="h-100 p-3">
+        <v-container>
+          <div class="d-flex justify-content-between align-items-center pt-2">
+            <h3 class="mb-0">Agregar servicios</h3>
+            <v-icon
+              style="color: black"
+              size="30"
+              @click="dialogDirectoryServices = false"
+              >mdi-window-close</v-icon
+            >
+          </div>
+          <v-row>
+            <v-col cols="12" md="12" class="pt-4">
+              <!-- service  -->
+              <base-text-area
+                label="Servicio que ofrece"
+                v-model="$v.directoryServices.service.$model"
+                :validation="$v.directoryServices.service"
+                validationTextType="none"
+                :rows="6"
+              />
+              <!-- service -->
+            </v-col>
+            <v-col cols="12" class="" align="center">
+              <v-btn color="btn-normal" rounded @click="addDirectoryServices"
+                >Guardar</v-btn
+              >
+              <v-btn
+                color="btn-normal-close"
+                rounded
+                @click="closeDialogDirectoryServices()"
+              >
+                Cancelar
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-dialog>
+    <!-- dialog directory services -->
   </div>
 </template>
 
@@ -231,12 +384,14 @@ export default {
       selected: [],
       dialog: false,
       dialogDelete: false,
+      dialogSocialNetworks: false,
+      dialogDirectoryServices: false,
       headers: [
-        { text: "NOMBRE", value: "name" },
-        { text: "TELÉFONO", value: "phone" },
-        { text: "DIRECCIÓN", value: "address" },
-        { text: "ZONA", value: "zone_name" },
-        { text: "ESTADO", value: "status" },
+        { text: "NOMBRE", value: "name", sortable: false },
+        { text: "TELÉFONO", value: "phone", sortable: false },
+        { text: "DIRECCIÓN", value: "address", sortable: false },
+        { text: "ZONA", value: "zone_name", sortable: false },
+        { text: "ESTADO", value: "status", sortable: false },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
       records: [],
@@ -244,6 +399,7 @@ export default {
       editedIndex: -1,
       title: "Directorio",
       totalItems: 0,
+      total: 0,
       options: {},
       editedItem: {
         name: "",
@@ -251,6 +407,7 @@ export default {
         address: "",
         zone_name: "",
         status: "",
+        directoryServicesArr: [],
       },
       defaultItem: {
         name: "",
@@ -258,6 +415,29 @@ export default {
         address: "",
         zone_name: "",
         status: "",
+        directoryServicesArr: [],
+      },
+      socialNetworks: {
+        facebook: "",
+        youtube: "",
+        instagram: "",
+        x: "",
+        company: "",
+        tiktok: "",
+      },
+      socialNetworksDefault: {
+        facebook: "",
+        youtube: "",
+        instagram: "",
+        x: "",
+        company: "",
+        tiktok: "",
+      },
+      directoryServices: {
+        service: "",
+      },
+      directoryServicesDefault: {
+        service: "",
       },
       selectedTab: 0,
       loading: false,
@@ -268,6 +448,7 @@ export default {
       redirectSessionFinished: false,
       alertTimeOut: 0,
       zones: [],
+      directoryServicesArr: [],
     };
   },
 
@@ -302,8 +483,18 @@ export default {
         required,
         minLength: minLength(1),
       },
-      status: {
-      },
+      status: {},
+    },
+    socialNetworks: {
+      facebook: {},
+      instagram: {},
+      youtube: {},
+      x: {},
+      company: {},
+      tiktok: {},
+    },
+    directoryServices: {
+      service: {},
     },
   },
 
@@ -395,6 +586,7 @@ export default {
         }
       } else {
         //Creating user
+        this.loading = true;
         const { data } = await directoryApi
           .post(null, this.editedItem)
           .catch((error) => {
@@ -409,6 +601,7 @@ export default {
         if (data.success) {
           this.updateAlert(true, data.message, "success");
         }
+        this.loading = false;
       }
 
       this.close();
@@ -487,6 +680,7 @@ export default {
 
         this.records = data.records;
         this.recordsFiltered = data.records;
+
         this.total = data.total;
         this.loading = false;
       }, 500);
@@ -504,6 +698,35 @@ export default {
       this.textAlert = text;
       this.alertEvent = event;
       this.showAlert = show;
+    },
+
+    addDirectoryServices() {
+      this.$v.directoryServices.$touch();
+
+      if (this.$v.directoryServices.$invalid) {
+        this.updateAlert(true, "Campos requeridos.", "fail");
+        return;
+      }
+
+      this.editedItem.directoryServicesArr.push({ ...this.directoryServices });
+      this.directoryServices = Object.assign({}, this.directoryServicesDefault);
+      this.$v.directoryServices.$reset();
+      this.closeDialogDirectoryServices();
+    },
+
+    closeDialogDirectoryServices() {
+      this.dialogDirectoryServices = false;
+      this.$nextTick(() => {
+        this.directoryServices = Object.assign(
+          {},
+          this.directoryServicesDefault
+        );
+        this.$v.directoryServices.$reset();
+      });
+    },
+
+    deleteServices(index) {
+      this.editedItem.directoryServicesArr.splice(index, 1);
     },
   },
 };

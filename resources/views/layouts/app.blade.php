@@ -47,6 +47,39 @@
                     </li>
                     <!-- Home -->
 
+                    <!-- directories -->
+                      <li class="text-center pb-1">
+                        <a href="{{ url('/directories') }}" class="text-center">
+                            <i class="material-icons md-18 mx-auto">auto_stories</i>
+                        </a>
+                        <a href="{{ url('/directories') }}">
+                            <p class="link mx-auto text-white fw-bold">Directorio</p>
+                        </a>
+                    </li>
+                    <!-- directories -->
+
+                    <!-- games -->
+                      <li class="text-center pb-1">
+                        <a href="{{ url('/games') }}" class="text-center">
+                            <i class="material-icons md-18 mx-auto">sports_esports</i>
+                        </a>
+                        <a href="{{ url('/games') }}">
+                            <p class="link mx-auto text-white fw-bold">Juegos</p>
+                        </a>
+                    </li>
+                    <!-- games -->
+
+                    <!-- modules -->
+                      <li class="text-center pb-1">
+                        <a href="{{ url('/modules') }}" class="text-center">
+                            <i class="material-icons md-18 mx-auto">layers</i>
+                        </a>
+                        <a href="{{ url('/modules') }}">
+                            <p class="link mx-auto text-white fw-bold">Módulos</p>
+                        </a>
+                    </li>
+                    <!-- modules -->
+
                        @if (auth()->user()->hasRole('Administrador') == 'Administrador')
                         <li>
                             <div class="icon-link pb-1">
@@ -60,13 +93,11 @@
                                 <li><a class="text-white fw-bold" href="{{ url('/interests') }}">Intereses</a></li>
                                 <li><a class="text-white fw-bold" href="{{ url('/sponsors') }}">Patrocinadores</a></li>
                                 <li><a class="text-white fw-bold" href="{{ url('/zones') }}">Zonas</a></li>
-                                <li><a class="text-white fw-bold" href="{{ url('/directories') }}">Directorio</a></li>
                                 <li><a class="text-white fw-bold" href="{{ url('/departments') }}">Departamentos</a></li>
                                 <li><a class="text-white fw-bold" href="{{ url('/emotion-tips') }}">Consejos</a></li>
                                 <li><a class="text-white fw-bold" href="{{ url('/emotions') }}">Emociones</a></li>
                                 <li><a class="text-white fw-bold" href="{{ url('/users') }}">Usuarios</a></li>
-                                <li><a class="text-white fw-bold" href="{{ url('/posts') }}">Publicaciones</a></li>
-                                <li><a class="text-white fw-bold" href="{{ url('/games') }}">Juegos</a></li>
+                                <li><a class="text-white fw-bold" href="{{ url('/videos') }}">Videos</a></li>
 
                             </ul>
                         </li>

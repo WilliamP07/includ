@@ -46,6 +46,7 @@
         :loading="loading"
         item-key="id"
         sort-by="id"
+        :server-items-length="total"
         :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
       >
         <template v-slot:item.status="{ item }">
@@ -216,10 +217,10 @@ export default {
       dialog: false,
       dialogDelete: false,
       headers: [
-        { text: "EMOCIÓN", value: "emotion" },
-        { text: "CONSEJO", value: "tip_title" },
-        { text: "DESCRIPCIÓN", value: "tip_description" },
-        { text: "ESTADO", value: "status" },
+        { text: "EMOCIÓN", value: "emotion", sortable: false },
+        { text: "CONSEJO", value: "tip_title", sortable: false },
+        { text: "DESCRIPCIÓN", value: "tip_description", sortable: false },
+        { text: "ESTADO", value: "status", sortable: false },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
       records: [],
@@ -227,6 +228,7 @@ export default {
       editedIndex: -1,
       title: "CONSEJOS",
       totalItems: 0,
+      total: 0,
       options: {},
       editedItem: {
         emotion: "",

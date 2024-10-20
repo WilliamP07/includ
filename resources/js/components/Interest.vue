@@ -185,8 +185,8 @@ export default {
       dialog: false,
       dialogDelete: false,
       headers: [
-        { text: "INTERESES", value: "interest" },
-        { text: "ESTADO", value: "status" },
+        { text: "INTERESES", value: "interest", sortable: false },
+        { text: "ESTADO", value: "status", sortable: false },
         { text: "ACCIONES", value: "actions", sortable: false },
       ],
       records: [],
@@ -194,6 +194,7 @@ export default {
       editedIndex: -1,
       title: "Intereses",
       totalItems: 0,
+      total: 0,
       options: {},
       editedItem: {
         interest: "",
