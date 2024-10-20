@@ -1,0 +1,564 @@
+<template>
+  <div data-app>
+      <alert-time-out
+      :redirect="redirectSessionFinished"
+      @redirect="updateTimeOut($event)"
+    />
+    <alert
+      :text="textAlert"
+      :event="alertEvent"
+      :show="showAlert"
+      @show-alert="updateAlert($event)"
+      class="mb-2"
+    />
+    <v-card class="p-3">
+      <v-row class="p-3">
+        <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+          <h2>{{ title }}</h2>
+        </v-col>
+        <v-col cols="4" sm="12" md="4" lg="4" xl="4" align="end">
+          <v-btn
+            rounded
+            @click="addRecord()"
+            class="mb-2 btn-normal no-uppercase"
+            title="Agregar"
+          >
+            Agregar
+          </v-btn>
+        </v-col>
+        <v-col cols="12" sm="12" md="12" lg="4" xl="4" class="pl-0 pb-0 pr-0">
+          <v-text-field
+            class=""
+            dense
+            outlined
+            label="Buscar"
+            type="text"
+            v-model="options.search"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <!-- <v-container>
+        <h2>ImageFile</h2>
+        <div class="options-table">
+          <v-btn rounded @click="addRecord()" title="Agregar">
+            <v-icon> mdi-plus </v-icon> Agregar
+          </v-btn>
+          <v-icon
+            @click="deleteItem()"
+            title="Eliminar"
+            v-if="selected.length > 0"
+          >
+            mdi-delete
+          </v-icon>
+        </div>
+        <v-col cols="12" sm="12" md="12" lg="4" xl="4" class="pl-0 pb-0 pr-0">
+          <v-text-field
+            class="mt-3"
+            dense
+            label="Buscar"
+            type="text"
+            v-model="options.search"
+          ></v-text-field>
+        </v-col>
+      </v-container> -->
+      <v-data-table
+        v-model="selected"
+        :search="options.search"
+        :headers="headers"
+        :items="recordsFiltered"
+        :options.sync="options"
+        :loading="loading"
+        item-key="id"
+        sort-by="id"
+        :footer-props="{ 'items-per-page-options': [15, 30, 50, 100] }"
+      >
+
+      <template v-slot:item.image_file_content="{item}">
+        <img :src="item.image_file_content" alt="" width="30px" height="auto">
+      </template>
+
+      <template v-slot:item.image_file_status="{ item }">
+          <v-chip
+            style="color: white"
+            :color="item.image_file_status == 1 ? '#FF6F15' : '#EBCDDB'"
+          >
+            {{ item.image_file_status == 1 ? "Público" : "Privado" }}
+          </v-chip>
+        </template>
+
+        <template v-slot:item.image_file_shows_in="{item}">
+          <v-chip
+            style="color: white"
+            color="#533A8E"
+          >
+            {{ item.image_file_shows_in }}
+          </v-chip>
+        </template>
+
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-icon small class="mr-2" @click="editItem(item)">
+            mdi-pencil
+          </v-icon>
+          <v-icon small class="mr-2" @click="deleteItem(item)">
+            mdi-delete
+          </v-icon>
+        </template>
+        <template v-slot:no-data>
+          <v-icon small class="mr-2" @click="initialize"> mdi-refresh </v-icon>
+        </template>
+      </v-data-table>
+    </v-card>
+
+    <v-dialog v-model="dialog" max-width="700" persistent>
+      <v-card class="flexcard" height="100%">
+        <v-card-title>
+          <h1 class="mx-auto pt-3 mb-3 text-center black-secondary">
+            {{ formTitle }}
+          </h1>
+        </v-card-title>
+
+        <v-card-text>
+          <v-container>
+            <!-- Form -->
+            <v-row class="pt-3">
+              
+              <!-- image_file_title -->
+              <v-col cols="12" sm="12" md="12">
+                  <base-input
+                  label="Título"
+                  v-model="$v.editedItem.image_file_title.$model"
+                  :validation="$v.editedItem.image_file_title"
+                  validationTextType="none"
+                  :validationsInput="{
+                      required: true,
+                      minLength: true,
+                  }"
+                  />
+              </v-col>
+              <!-- image_file_title -->
+
+              <!-- image_file_description -->
+              <v-col cols="12" sm="12" md="12">
+                  <base-input
+                  label="Descripción"
+                  v-model="$v.editedItem.image_file_description.$model"
+                  :validation="$v.editedItem.image_file_description"
+                  validationTextType="none"
+                  :validationsInput="{
+                      required: true,
+                      minLength: true,
+                  }"
+                  />
+              </v-col>
+              <!-- image_file_description -->
+
+        
+              <!-- image_file_shows_in -->
+              <!-- <v-col cols="12" sm="12" md="12">
+                  <base-input
+                  label="Sección a la que pertenece"
+                  v-model="$v.editedItem.image_file_shows_in.$model"
+                  :validation="$v.editedItem.image_file_shows_in"
+                  validationTextType="none"
+                  :validationsInput="{
+                      required: true,
+                      minLength: true,
+                  }"
+                  />
+              </v-col> -->
+              <v-col cols="12" sm="12" md="12">
+                <base-select-search
+                  label="Sección a la que pertenece"
+                  v-model.trim="$v.editedItem.image_file_shows_in.$model"
+                  :items="sections"
+                  item="section_name"
+                  :validation="$v.editedItem.image_file_shows_in"
+                  :validationsInput="{
+                    required: true,
+                    minLength: true,
+                  }"
+                />
+              </v-col>
+              <!-- image_file_shows_in -->
+        
+              <!-- image_file_content -->
+              <!-- <v-col cols="12" sm="12" md="4">
+                <base-input
+                label="Image File File Content"
+                v-model="$v.editedItem.image_file_content.$model"
+                :validation="$v.editedItem.image_file_content"
+                validationTextType="none"
+                :validationsInput="{
+                    required: true,
+                    minLength: true,
+                }"
+                />
+            </v-col> -->
+
+            <v-col cols="12" sm="12" md="6" class="">
+                <h6 class="mb-0 fw-bold text-dark">
+                  Adjuntar imágen
+                </h6>
+                <span class="">(Máximo 5MB | png, jpg, jpeg)</span>
+                <input-image
+                  class=""
+                  v-model="$v.editedItem.image_file_content.$model"
+                  :validation="$v.editedItem.image_file_content"
+                  :image="editedItem.image_file_content"
+                  @update-image="editedItem.image_file_content = $event"
+                />
+              </v-col>
+          <!-- image_file_content -->
+
+          <!-- image_file_status -->
+              <!-- <v-col cols="12" sm="12" md="6">
+                <base-input
+                label="¿Publicar?"
+                v-model="$v.editedItem.image_file_status.$model"
+                :validation="$v.editedItem.image_file_status"
+                validationTextType="none"
+                :validationsInput="{
+                    required: true,
+                    minLength: true,
+                }"
+                />
+              </v-col> -->
+
+              <v-col cols="12" sm="12" md="6">
+                <v-checkbox
+                  v-model="$v.editedItem.image_file_status.$model"
+                  label="¿Publicar?"
+                  style="margin-top: 0"
+                ></v-checkbox>
+              </v-col>
+              <!-- image_file_status -->
+
+            </v-row>
+            <!-- Form -->
+            <v-row>
+              <v-col align="center">
+                <v-btn
+                  color="btn-normal no-uppercase mt-3"
+                  rounded
+                  @click="save"
+                >
+                  Guardar
+                </v-btn>
+                <v-btn
+                  color="btn-normal-close no-uppercase mt-3"
+                  rounded
+                  @click="close"
+                >
+                  Cancelar
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="dialogDelete" max-width="400px">
+      <v-card class="h-100">
+        <v-container>
+          <h1 class="black-secondary text-center mt-3 mb-3">
+            {{
+              selected.length > 0 ? "Eliminar registros" : "Eliminar registro"
+            }}
+          </h1>
+          <v-row>
+            <v-col align="center">
+              <v-btn
+                color="btn-normal no-uppercase mt-3 mb-3 pr-5 pl-5 mx-auto"
+                rounded
+                @click="deleteItemConfirm"
+                >Confirmar</v-btn
+              >
+              <v-btn
+                color="btn-normal-close no-uppercase mt-3 mb-3"
+                rounded
+                @click="closeDelete"
+              >
+                Cancelar
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
+
+<script>
+
+import imageFileApi from "../apis/imageFileApi";
+
+import { required, minLength, maxLength } from "vuelidate/lib/validators";
+
+export default {
+  data() {
+    return {
+      search: "",
+      selected: [],
+      dialog: false,
+      dialogDelete: false,
+      headers: [
+        
+		{ text: "Título", value: "image_file_title" },
+		{ text: "Archivo", value: "image_file_content" },
+		{ text: "Descripción", value: "image_file_description" },
+		{ text: "Estado", value: "image_file_status" },
+		{ text: "Sección", value: "image_file_shows_in" },
+        { text: "ACCIONES", value: "actions", sortable: false },
+      ],
+      records: [],
+      recordsFiltered: [],
+      editedIndex: -1,
+      title: "Imágenes",
+      totalItems: 0,
+      options: {},
+      editedItem: {
+        		image_file_title: "",		image_file_content: "",		image_file_description: "",		image_file_status: "",		image_file_shows_in: "",
+      },
+      defaultItem: {
+        		image_file_title: "",		image_file_content: "",		image_file_description: "",		image_file_status: "",		image_file_shows_in: "",
+      },
+      selectedTab: 0,
+      loading: false,
+      debounce: 0,
+      textAlert: "",
+      alertEvent: "success",
+      showAlert: false,
+      redirectSessionFinished: false,
+      alertTimeOut: 0,
+      sections: [{section_name: "Home"}, {section_name: "Slider"}]
+      
+    };
+  },
+
+  watch: {
+    options: {
+      handler() {
+        this.getDataFromApi();
+      },
+      deep: true,
+    },
+    dialogDelete(val) {
+      val || this.closeDelete();
+    },
+  },
+
+  // Validations
+  validations: {
+    editedItem: {
+      image_file_title: {
+		required,
+		minLength: minLength(1),
+},image_file_content: {
+		required,
+		minLength: minLength(1),
+},image_file_description: {
+		required,
+		minLength: minLength(1),
+},image_file_status: {
+		required,
+		minLength: minLength(1),
+},image_file_shows_in: {
+		required,
+		minLength: minLength(1),
+},
+    },
+  },
+
+  computed: {
+    formTitle() {
+      return this.editedIndex === -1 ? "Nuevo registro" : "Editar registro";
+    },
+  },
+
+  watch: {
+    options: {
+      handler() {
+        this.getDataFromApi();
+      },
+      deep: false,
+      dirty: false,
+    },
+    dialog(val) {
+      val || this.close();
+    },
+    dialogBlock(val) {
+      val || this.closeBlock();
+    },
+  },
+
+  created() {
+    this.initialize();
+  },
+
+  methods: {
+    async initialize() {
+      this.loading = true;
+      this.$v.$reset();
+      this.records = [];
+      this.recordsFiltered = [];
+
+      let requests = [
+        this.getDataFromApi(),
+        
+      ];
+
+      const responses = await Promise.all(requests).catch((error) => {
+        this.updateAlert(true, "No fue posible obtener el registro.", "fail");
+
+        this.redirectSessionFinished = lib.verifySessionFinished(error.response.status, 419);
+      });
+
+      if (responses) {
+        
+      }
+
+      this.loading = false;
+    },
+
+    editItem(item) {
+      this.editedIndex = this.recordsFiltered.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.selectedTab = 0;
+      this.dialog = true;
+      console.log(this.editedItem);
+    },
+
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    async save() {
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        this.updateAlert(true, "Campos obligatorios.", "fail");
+        return;
+      }
+
+      if (this.editedIndex > -1) {
+        const edited = Object.assign(
+          this.recordsFiltered[this.editedIndex],
+          this.editedItem
+        );
+
+        const { data } = await imageFileApi
+          .put(`/${edited.id}`, edited)
+          .catch((error) => {
+            this.updateAlert(true, "No fue posible actualizar el registro.", "fail");
+
+            this.redirectSessionFinished = lib.verifySessionFinished(error.response.status, 419);
+          });
+
+        if (data.success) {
+            this.updateAlert(true, data.message, "success");
+        }
+      } else {
+        //Creating user
+        const { data } = await imageFileApi
+          .post(null, this.editedItem)
+          .catch((error) => {
+            this.updateAlert(true, "No fue posible crear el registro.", "fail");
+
+            this.redirectSessionFinished = lib.verifySessionFinished(error.response.status, 419);
+          });
+
+        if (data.success) {
+          this.updateAlert(true, data.message, "success");
+        }
+      }
+
+      this.close();
+      this.initialize();
+      return;
+    },
+
+    deleteItem(item = null) {
+      console.log(item);
+      if (item) {
+        this.editedIndex = this.recordsFiltered.indexOf(item);
+        this.editedItem = Object.assign({}, item);
+        this.selected = [];
+      }
+
+      this.dialogDelete = true;
+    },
+
+    closeDelete() {
+      this.dialogDelete = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    async deleteItemConfirm() {
+      const { data } = await imageFileApi
+        .delete(null, {
+          params: {
+            selected: this.selected,
+            id: this.editedItem.id,
+          }
+        })
+        .catch((error) => {
+            this.updateAlert(true, "No fue posible eliminar el registro.", "fail");
+
+            this.redirectSessionFinished = lib.verifySessionFinished(error.response.status, 419);
+          this.close();
+        });
+
+      if (data.success) {
+        this.updateAlert(true, data.message, "success");
+      }
+
+      this.initialize();
+      this.closeDelete();
+    },
+
+    getDataFromApi() {
+      this.loading = true;
+      this.records = [];
+      this.recordsFiltered = [];
+
+      //debounce
+      clearTimeout(this.debounce);
+      this.debounce = setTimeout(async () => {
+        const { data } = await imageFileApi
+          .get(null, {
+            params: this.options,
+          })
+          .catch((error) => {
+            this.updateAlert(true, "No fue posible obtener los registros.", "fail");
+          });
+
+        this.records = data.records;
+        this.recordsFiltered = data.records;
+        this.total = data.total;
+        this.loading = false;
+      }, 500);
+    },
+
+    addRecord() {
+      this.dialog = true;
+      this.editedIndex = -1;
+      this.selectedTab = 0;
+      this.editedItem = Object.assign({}, this.defaultItem);
+      this.$v.$reset();
+    },
+
+    updateAlert(show = false, text = "Alerta", event = "success") {
+      this.textAlert = text;
+      this.alertEvent = event;
+      this.showAlert = show;
+    },
+  },
+};
+</script>

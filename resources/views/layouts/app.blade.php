@@ -97,8 +97,8 @@
                                 <li><a class="text-white fw-bold" href="{{ url('/emotion-tips') }}">Consejos</a></li>
                                 <li><a class="text-white fw-bold" href="{{ url('/emotions') }}">Emociones</a></li>
                                 <li><a class="text-white fw-bold" href="{{ url('/users') }}">Usuarios</a></li>
+                                <li><a class="text-white fw-bold" href="{{ url('/images') }}">Imágenes</a></li>
                                 <li><a class="text-white fw-bold" href="{{ url('/videos') }}">Videos</a></li>
-
                             </ul>
                         </li>
                     @endif
