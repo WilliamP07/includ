@@ -12,6 +12,7 @@ use App\Http\Controllers\DirectoryController;
 use App\Http\Controllers\EmotionTipsController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmotionController;
+use App\Http\Controllers\ImageFileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,6 +63,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::resource('/api/web/emotion', EmotionController::class);
         Route::delete('/api/web/emotion', [EmotionController::class, 'destroy']);
 
+        Route::resource('/api/web/imageFile', ImageFileController::class);
+        Route::delete('/api/web/imageFile', [ImageFileController::class, 'destroy']);
         // Route::get('posts', [PostController::class, 'index']);
         // Route::post('post', [PostController::class, 'store']);
 
@@ -83,5 +86,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/zones', fn() => view('zone.index'));
         Route::get('/departments', fn() => view('department.index'));
         Route::get('/municipalities', fn() => view('municipality.index'));
+
+        Route::get('/images', fn() => view('image_file.index'));
     });
 });

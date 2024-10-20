@@ -67,6 +67,7 @@
                                 <li><a class="text-white fw-bold" href="{{ url('/users') }}">Usuarios</a></li>
                                 <li><a class="text-white fw-bold" href="{{ url('/posts') }}">Publicaciones</a></li>
                                 <li><a class="text-white fw-bold" href="{{ url('/games') }}">Juegos</a></li>
+                                <li><a class="text-white fw-bold" href="{{ url('/images') }}">Imágenes</a></li>
 
                             </ul>
                         </li>
